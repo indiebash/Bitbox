@@ -1,0 +1,8 @@
+<div 
+[style.width]="data.size + 'px'"
+[style.height]="data.size + 'px'"
+(mousedown)="data.mouseDown(data.position)"
+(mouseup)="data.mouseUp(data.position)"
+(mouseover)="data.mouseOver(data.position)"
+[className]="data.class"
+></div>

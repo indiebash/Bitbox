@@ -1,0 +1,11 @@
+@import '../../../style-variables.scss';
+
+.header {
+    background-color: $color-blue;
+    height: 100%;
+    padding: 15px;
+
+    .title {
+        color: white;
+    }
+}

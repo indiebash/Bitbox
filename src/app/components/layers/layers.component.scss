@@ -1,0 +1,13 @@
+@import '../../../style-variables.scss';
+
+.layers {
+    background-color: $color-blue;
+    color: white;
+    height: 100%;
+    padding: 15px;
+
+    .header {
+        font-size: 2em;
+        padding-bottom: 15px;
+    }
+}

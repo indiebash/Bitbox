@@ -1,0 +1,29 @@
+header { 
+    grid-area: header;
+    height: 10vh;
+}
+
+layers { 
+    grid-area: layers;
+    height: 80vh; 
+}
+
+timeline { 
+    grid-area: timeline;
+    height: 80vh;
+}
+
+playback-controls { 
+    grid-area: playback-controls; 
+    height: 20vh;
+}
+
+.grid-container {
+    //width: 100vw;
+    //height: 100vh;
+    display: grid;
+    grid-template-columns: 20% 80%;
+    grid-template-areas:
+    'layers timeline'
+    'playback-controls playback-controls';
+}

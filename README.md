@@ -1,3 +1,3 @@
 # FugueSynth
 
-A web based synthesizer for creating musical compositions using the fugue technique. 
+A web-based multihead sequencer and synthesizer for creating music using the fugue composition technique. 

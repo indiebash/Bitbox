@@ -1,0 +1,46 @@
+@import '../../../style-variables.scss';
+
+div {
+    border-radius: 5px;
+    margin: 5px;
+}
+
+.unselected {
+    background-color: $color-dark-gray;
+
+    &:hover {
+        background-color: lighten($color-dark-gray, 10%);
+        box-shadow: 0px 0px 50px lighten($color-dark-gray, 10%);
+    }
+}
+
+.selected {
+    background-color: $color-neon-blue;
+    box-shadow: 0px 0px 50px $color-neon-blue;
+}
+
+.center {
+    background-color: $color-neon-blue;
+    box-shadow: 0px 0px 50px $color-neon-blue;
+    border-radius: 0px;
+    margin: 5px 0px;
+    padding: 0px 5px;
+}
+
+.left {
+    background-color: $color-neon-blue;
+    box-shadow: 0px 0px 50px $color-neon-blue;
+    margin-right: 0px;
+    padding-right: 5px;
+    border-bottom-right-radius: 0px;
+    border-top-right-radius: 0px;
+}
+
+.right {
+    background-color: $color-neon-blue;
+    box-shadow: 0px 0px 50px $color-neon-blue;
+    margin-left: 0px;
+    padding-left: 5px;
+    border-bottom-left-radius: 0px;
+    border-top-left-radius: 0px;
+}

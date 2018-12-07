@@ -1,0 +1,25 @@
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+@import "./style-variables.scss";
+
+@font-face {
+    font-family: Dimitri-Flat;
+    src: url("assets/fonts/dimitri-flat.ttf") format("truetype")
+}
+
+@font-face {
+    font-family: Dimitri;
+    src: url("assets/fonts/dimitri.ttf") format("truetype")
+}
+
+body {
+    font-family: Dimitri-Flat;
+    text-transform: uppercase;
+    margin: 0px;
+    background-color: $color-dark-gray;
+    cursor: pointer;
+}
+
+.blue-glow {
+    color: $color-neon-blue;
+    text-shadow: 0px 0px 10px darken($color-neon-blue, 10%);
+}
