@@ -1,5 +1,7 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { Block, Coordinate, SelectionType } from '../block/block.component';
+import * as Tone from 'tone';
+import { TrackService } from 'src/app/services/track.service';
 
 @Component({
   selector: 'timeline',
@@ -13,24 +15,40 @@ export class TimelineComponent implements OnInit, AfterViewInit {
   startPosition: Coordinate;
   endPosition: Coordinate;
   lastDragged: Coordinate;
+  notes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 
-  ngOnInit() { 
-   
+  constructor(private trackService: TrackService) {
+
   }
 
-  ngAfterViewInit() { 
+  ngOnInit() {
+    // let synth = new Tone.Synth().toMaster();
+    // //use an array of objects as long as the object has a "time" attribute
+    // var part = new Tone.Part(function (time, value) {
+    //   //the value is an object which contains both the note and the velocity
+    //   synth.triggerAttackRelease(value.note, value.length, time);
+    // }, [{ "time": "0:0", "note": "C3", "length": "8n" },
+    // { "time": "0:2", "note": "C4", "length": "8n" }
+    //   ]).start(0);
+    //   var part2 = new Tone.Part(function (time, value) {
+    //     //the value is an object which contains both the note and the velocity
+    //     synth.triggerAttackRelease(value.note, value.length, time);
+    //   }, [{ "time": "0:0", "note": "D3", "length": "8n" },
+    //   { "time": "0:2", "note": "D4", "length": "8n" }
+    //     ]).start(0);
+  }
+
+    ngAfterViewInit() { 
     this.setBlocks();
   }
-
+ 
   setBlocks() {
     let width = document.getElementById('timeline').clientWidth;
     let size  = (width / (this.trackLength) * 0.98) - 10;
-    console.log(width);
-    console.log(size);
 
     for(let x=0; x<this.trackLength; x++) {
       this.timeline[x] = [];
-      for(let y=0; y<this.trackLength; y++){
+      for(let y=0; y<this.notes.length; y++){
         this.timeline[x].push({
             size: size,
             mouseDown: this.mouseDown.bind(this),
@@ -55,10 +73,54 @@ export class TimelineComponent implements OnInit, AfterViewInit {
   mouseUp(position: Coordinate) {
     this.clicking = false;
     this.endPosition = position;
+    this.setNotes();
+  }
+
+  lastNote = -10;
+  setNotes() {
+    this.trackService.clear();
+    let synth = new Tone.PolySynth(12, Tone.Synth).toMaster();
+    let lineNotes = [];
+    let lastNote = undefined;
+    // start, length, noteIndex
+    for(let y=0; y<this.notes.length; y++){
+      lastNote = -10
+        for(let x=0; x<this.trackLength; x++) {
+        if(this.timeline[x][y].selected) {
+          console.log('checking x:'+x, x-1);
+          console.log('lastNote', this.lastNote);
+          if(this.lastNote === x-1) {
+            console.log('lastNote found!', {x: x, y: y});
+            lineNotes[lineNotes.length-1].length += 1;
+            this.lastNote = x;
+          } else {
+            this.lastNote = x;
+            console.log('just set lastNote', x);
+            lineNotes.push({
+              start: x,
+              length: 1,
+              noteIndex: y
+            });
+          }
+          // lineNotes.push({ "time": `0:${x}`, "note": `${this.notes[y]}4`, "length": "0:1:0" });
+        }
+      }
+    }
+    console.log(lineNotes.length + ' notes recored');
+
+    let final = lineNotes.map(lineNote => {
+      return {
+        time: `0:${lineNote.start}`,
+        note: `${this.notes[lineNote.noteIndex]}4`,
+        length: `0:${lineNote.length}:0`
+      }
+    });
+    new Tone.Part(function (time, value) {
+      synth.triggerAttackRelease(value.note, value.length, time); 
+    }, final).start(0);
   }
 
   mouseOver(position: Coordinate) {
-    console.log(position);
     if(this.clicking) {
       this.toggleBlock({x: position.x, y: this.startPosition.y}, true, SelectionType.selected);
       if(position.x > this.lastDragged.x) {

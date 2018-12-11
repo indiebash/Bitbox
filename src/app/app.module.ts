@@ -8,6 +8,7 @@ import { TimelineComponent } from './components/timeline/timeline.component';
 import { LayersComponent } from './components/layers/layers.component';
 import { PlaybackControlsComponent } from './components/playback-controls/playback-controls.component';
 import { BlockComponent } from './components/block/block.component';
+import { TrackService } from './services/track.service';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,7 @@ import { BlockComponent } from './components/block/block.component';
     BrowserModule,
     BrowserAnimationsModule
   ],
-  providers: [],
+  providers: [TrackService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

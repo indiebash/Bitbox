@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { TrackService } from 'src/app/services/track.service';
 
 @Component({
   selector: 'playback-controls',
@@ -7,9 +8,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PlaybackControlsComponent implements OnInit {
 
-  constructor() { }
+  constructor(private trackService: TrackService) { }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
 }
