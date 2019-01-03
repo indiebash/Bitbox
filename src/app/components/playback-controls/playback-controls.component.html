@@ -1,3 +1,6 @@
 <div class="playback-controls">
-  <button (click)="trackService.togglePlay()">{{trackService.playing ? 'Pause': 'Play'}}</button>>
+  <button (click)="trackService.togglePlay()">
+    <i class="material-icons" *ngIf="!trackService.playing">play_circle_outline</i>
+    <i class="material-icons" *ngIf="trackService.playing">pause_circle_outline</i>
+  </button>
 </div>

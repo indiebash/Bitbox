@@ -5,3 +5,16 @@
     color: white;
     height: 100%;
 }
+
+button {
+    background-color: transparent;
+    border: none;
+    i {
+        color: $color-neon-blue;
+        font-size: 40px;
+    }
+
+    &:focus {
+        outline: none;
+    }
+}

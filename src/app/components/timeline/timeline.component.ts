@@ -18,7 +18,7 @@ export class TimelineComponent implements OnInit, AfterViewInit {
   notes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 
   constructor(private trackService: TrackService) {
-
+    this.notes = this.notes.reverse();
   }
 
   ngOnInit() {
@@ -56,7 +56,9 @@ export class TimelineComponent implements OnInit, AfterViewInit {
             mouseOver: this.mouseOver.bind(this),
             position: {x: x, y: y},
             class: 'unselected',
-            selected: false
+            selected: false,
+            end: false,
+            single: false
           });
       }
     }
@@ -65,36 +67,49 @@ export class TimelineComponent implements OnInit, AfterViewInit {
   mouseDown(position: Coordinate) {
     this.clicking = true;
     this.startPosition = position;
-    this.toggleBlock(position, true, SelectionType.selected);
+    let block = this.getBlock(position.x, position.y);
+    block.selected = true;
+    block.class = SelectionType.selected;
+    block.end = true;
     this.lastDragged = position;
-    this.setRowClasses();
+    //this.setRowClasses();
   }
 
   mouseUp(position: Coordinate) {
     this.clicking = false;
     this.endPosition = position;
+    if(this.endPosition.x > this.lastDragged.x+1 || this.endPosition.x < this.lastDragged.x-1) {
+      this.getBlock(this.lastDragged.x, this.startPosition.y).end = true;
+    } else {
+      this.getBlock(position.x, this.startPosition.y).end = true;
+    }
+    if(this.startPosition.x === this.endPosition.x){
+      this.timeline[this.startPosition.x][this.startPosition.y].single = true;
+      this.timeline[this.startPosition.x][this.startPosition.y].class = SelectionType.selected;
+    }
+    //this.setRowClasses();
     this.setNotes();
   }
 
-  lastNote = -10;
+  lastNote = new Coordinate(-10, -10);
   setNotes() {
     this.trackService.clear();
     let synth = new Tone.PolySynth(12, Tone.Synth).toMaster();
     let lineNotes = [];
-    let lastNote = undefined;
+    let lastNote: Coordinate = undefined;
     // start, length, noteIndex
-    for(let y=0; y<this.notes.length; y++){
-      lastNote = -10
-        for(let x=0; x<this.trackLength; x++) {
-        if(this.timeline[x][y].selected) {
-          console.log('checking x:'+x, x-1);
+    for (let y = 0; y < this.notes.length; y++) {
+      lastNote = new Coordinate(-10, -10);
+      for (let x = 0; x < this.trackLength; x++) {
+        if (this.timeline[x][y].selected) {
+          console.log('checking x:' + x, x - 1);
           console.log('lastNote', this.lastNote);
-          if(this.lastNote === x-1) {
-            console.log('lastNote found!', {x: x, y: y});
-            lineNotes[lineNotes.length-1].length += 1;
-            this.lastNote = x;
+          if (this.lastNote.x === x - 1 && this.lastNote.y === y && (this.timeline[x-1][y].class === SelectionType.center || this.timeline[x-1][y].class === SelectionType.left)) {
+            console.log('lastNote found! Extending note', { x: x, y: y });
+            lineNotes[lineNotes.length - 1].length += 1;
+            this.lastNote = new Coordinate(x, y);
           } else {
-            this.lastNote = x;
+            this.lastNote = new Coordinate(x, y);
             console.log('just set lastNote', x);
             lineNotes.push({
               start: x,
@@ -106,7 +121,7 @@ export class TimelineComponent implements OnInit, AfterViewInit {
         }
       }
     }
-    console.log(lineNotes.length + ' notes recored');
+    console.log('notes', lineNotes);
 
     let final = lineNotes.map(lineNote => {
       return {
@@ -120,54 +135,122 @@ export class TimelineComponent implements OnInit, AfterViewInit {
     }, final).start(0);
   }
 
-  mouseOver(position: Coordinate) {
-    if(this.clicking) {
-      this.toggleBlock({x: position.x, y: this.startPosition.y}, true, SelectionType.selected);
-      if(position.x > this.lastDragged.x) {
-        console.log('moving right');
-        if(position.x <= this.startPosition.x) {
-          this.toggleBlock({x: position.x-1, y: this.startPosition.y}, false);
+  setPreviousLeft(x: number, y: number) {
+    if(x > 0) {
+      let block = this.getBlock(x-1, y);
+      if(block.selected) {
+        if(block.end) {
+          block.class = SelectionType.left;
+        } else {
+          block.class = SelectionType.center;
         }
+      }
+    }
+  }
+
+  setPreviousRight(x: number, y: number) {
+    if(x < this.trackLength-1) {
+      let block = this.getBlock(x+1, y);
+      if(block.selected) {
+        if(block.end) {
+          block.class = SelectionType.right;
+        } else {
+          block.class = SelectionType.center;
+        }
+      }
+    }
+  }
+
+  setNextRight(x: number, y: number) {
+    if(x < this.timeline.length-1) {
+      let block = this.getBlock(x+1, y);
+
+    }
+  }
+
+  // setBlockState(x: number, y: number) {
+  //   if(x >= 0 && x <= this.timeline.length) {
+  //     let block = this.getBlock(x,y);
+  //     if(block.selected) {
+  //       if(this.isOnLeft(block.position) && !block.single) {
+  //         block.class = SelectionType.left;
+  //       } else if (this.isInCenter(block.position) && !block.single) {
+  //         block.class = SelectionType.center;
+  //       } else if (this.isOnRight(block.position) && !block.single) {
+  //         block.class = SelectionType.right;
+  //       } else {
+  //         block.class = SelectionType.selected;
+  //       }
+  //     } else {
+  //       block.class = SelectionType.unselected;
+  //       block.end = false;
+  //     }
+  //   }
+  // }
+
+  mouseOver(position: Coordinate) {
+    if(this.clicking 
+      && !this.timeline[position.x][this.startPosition.y].selected
+      && (this.lastDragged.x === position.x+1 || this.lastDragged.x === position.x-1)
+      ) {
+      //this.toggleBlock({x: position.x, y: this.startPosition.y}, true, SelectionType.selected);
+      this.timeline[position.x][this.startPosition.y].selected = true;
+      this.timeline[position.x][this.startPosition.y].single = false;
+      if(position.x > this.lastDragged.x) {
+        //console.log('moving right');
+        this.timeline[position.x][this.startPosition.y].class = SelectionType.right;
+        this.setPreviousLeft(position.x, this.startPosition.y);
+        if(position.x <= this.startPosition.x) {
+          this.timeline[position.x-1][this.startPosition.y].selected = false;
+        }
+
       } else if (position.x < this.lastDragged.x) {
-        console.log('moving left');
+        //console.log('moving left');
+        this.timeline[position.x][this.startPosition.y].class = SelectionType.left;
+        this.setPreviousRight(position.x, this.startPosition.y);
         if(position.x >= this.startPosition.x) {
-          this.toggleBlock({x: position.x+1, y: this.startPosition.y}, false);
+          this.timeline[position.x+1][this.startPosition.y].selected = false;
         }
       } else {
-        console.log('at origin');
+        //console.log('at origin');                
       }
-      this.setRowClasses();
+      //this.setRowClasses();
       this.lastDragged = position;
     }
   }
 
-  setRowClasses() {
-    for(let i=0; i<this.trackLength; i++) {
-      let block = this.getBlock({x: i, y: this.startPosition.y});
-      if(block.selected) {
-        if(this.isOnLeft(block.position)) {
-          block.class = SelectionType.left;
-        } else if (this.isInCenter(block.position)) {
-          block.class = SelectionType.center;
-        } else if (this.isOnRight(block.position)) {
-          block.class = SelectionType.right;
-        } else {
-          block.class = SelectionType.selected;
-        }
-      } else {
-        block.class = SelectionType.unselected;
-      }
-    }
-  }
+  // setRowClasses() {
+  //   for(let i=0; i<this.trackLength; i++) {
+  //     let block = this.getBlock(i, this.startPosition.y);
+  //     if(block.selected) {
+  //       if(this.isOnLeft(block.position) && !block.single) {
+  //         block.class = SelectionType.left;
+  //       } else if (this.isInCenter(block.position) && !block.single) {
+  //         block.class = SelectionType.center;
+  //       } else if (this.isOnRight(block.position) && !block.single) {
+  //         block.class = SelectionType.right;
+  //       } else {
+  //         block.class = SelectionType.selected;
+  //       }
+  //     } else {
+  //       block.class = SelectionType.unselected;
+  //     }
+  //   }
+  // }
 
   isOnLeft(position: Coordinate) {
-    return this.getRightBlock(position) && this.getRightBlock(position).selected 
-    && (!this.getLeftBlock(position) || !this.getLeftBlock(position).selected)
+    let rightBlock = this.getRightBlock(position);
+    let leftBlock = this.getLeftBlock(position);
+    return rightBlock 
+    && rightBlock.selected 
+    && (rightBlock.class === SelectionType.right || rightBlock.class === SelectionType.center)
+    && (!leftBlock || !leftBlock.selected || leftBlock.class !== SelectionType.right);
   }
 
   isOnRight(position: Coordinate) {
-    return this.getLeftBlock(position) && this.getLeftBlock(position).selected
-    && (!this.getRightBlock(position) || !this.getRightBlock(position).selected)
+    let rightBlock = this.getRightBlock(position);
+    let leftBlock = this.getLeftBlock(position);
+    return leftBlock && rightBlock.selected && (!rightBlock || !rightBlock.selected);
   }
 
   isInCenter(position: Coordinate) {
@@ -175,26 +258,26 @@ export class TimelineComponent implements OnInit, AfterViewInit {
     && this.getLeftBlock(position) && this.getLeftBlock(position).selected
   }
 
-  getBlock(position: Coordinate) {
-    return this.timeline[position.x][position.y];
+  getBlock(x: number, y: number) {
+    return this.timeline[x][y];
   }
 
   getRightBlock(position: Coordinate) {
-    return position.x !== this.trackLength - 1 ? this.getBlock({x: position.x+1, y: position.y}): undefined;
+    return position.x !== this.trackLength - 1 ? this.getBlock(position.x+1, position.y): undefined;
   }
 
   getLeftBlock(position: Coordinate) {
-    return position.x !== 0 ? this.getBlock({x: position.x-1, y: position.y}): undefined;
+    return position.x !== 0 ? this.getBlock(position.x-1, position.y): undefined;
   }
 
-  toggleBlock(position: Coordinate, selected: boolean, selectionType?: SelectionType) {
-    let block = this.getBlock(position);
-    block.selected = selected;
-    if(selected) {
-      block.class = selectionType;
-    } else {
-      block.class = SelectionType.unselected;
-    }
-  }
+  // toggleBlock(position: Coordinate, selected: boolean, selectionType?: SelectionType) {
+  //   let block = this.getBlock(position);
+  //   block.selected = selected;
+  //   if(selected) {
+  //     block.class = selectionType;
+  //   } else {
+  //     block.class = SelectionType.unselected;
+  //   }
+  // }
 
 }

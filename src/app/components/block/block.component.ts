@@ -22,11 +22,18 @@ export class Block {
   position: Coordinate;
   class: string;
   selected: boolean;
+  end: boolean;
+  single: boolean;
 }
 
 export class Coordinate {
   x: number;
   y: number;
+
+  constructor (x: number, y: number) {
+    this.x = x;
+    this.y = y;
+  }
 }
 
 export enum SelectionType {
