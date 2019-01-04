@@ -539,7 +539,7 @@ if(false) {}
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /Users/z0030pl/Dev/FugueSynth/src/styles.scss */"./src/styles.scss");
+module.exports = __webpack_require__(/*! /Users/z0030pl/Dev/Bitbox/src/styles.scss */"./src/styles.scss");
 
 
 /***/ })
