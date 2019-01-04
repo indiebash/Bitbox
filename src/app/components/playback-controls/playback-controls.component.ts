@@ -7,8 +7,10 @@ import { TrackService } from 'src/app/services/track.service';
   styleUrls: ['./playback-controls.component.scss']
 })
 export class PlaybackControlsComponent implements OnInit {
+  
+  constructor(private trackService: TrackService) {
 
-  constructor(private trackService: TrackService) { }
+   }
 
   ngOnInit() {}
 

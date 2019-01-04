@@ -9,6 +9,7 @@ import { LayersComponent } from './components/layers/layers.component';
 import { PlaybackControlsComponent } from './components/playback-controls/playback-controls.component';
 import { BlockComponent } from './components/block/block.component';
 import { TrackService } from './services/track.service';
+import { ScrubberComponent } from './components/scrubber/scrubber.component';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { TrackService } from './services/track.service';
     LayersComponent,
     PlaybackControlsComponent,
     BlockComponent,
+    ScrubberComponent,
   ],
   imports: [
     BrowserModule,

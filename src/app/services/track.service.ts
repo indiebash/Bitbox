@@ -11,6 +11,7 @@ export class TrackService {
     Tone.Transport.loop = true;
     Tone.Transport.loopStart = 0;
     Tone.Transport.loopEnd = '0:16';
+    Tone.Transport.bpm.value = 120;
   }
 
   public togglePlay() {
@@ -24,5 +25,9 @@ export class TrackService {
 
   public clear() {
     Tone.Transport.cancel();  
+  }
+
+  public getTime() {
+    return Tone.Transport.seconds;
   }
 }

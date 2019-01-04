@@ -1,0 +1,10 @@
+@import '../../../style-variables.scss';
+
+.scrubber {
+  border-left: 2px solid $color-neon-blue;
+  height: 100%;
+  position: absolute;
+  left: 50%;
+  margin-left: -1px;
+  top: 0;
+}
