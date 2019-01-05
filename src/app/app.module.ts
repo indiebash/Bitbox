@@ -10,6 +10,8 @@ import { PlaybackControlsComponent } from './components/playback-controls/playba
 import { BlockComponent } from './components/block/block.component';
 import { TrackService } from './services/track.service';
 import { ScrubberComponent } from './components/scrubber/scrubber.component';
+import { StoreModule } from '@ngrx/store';
+import { stateReducer } from './state/reducers/state.reducer';
 
 @NgModule({
   declarations: [
@@ -23,7 +25,10 @@ import { ScrubberComponent } from './components/scrubber/scrubber.component';
   ],
   imports: [
     BrowserModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    StoreModule.forRoot({ 
+      state: stateReducer 
+    })
   ],
   providers: [TrackService],
   bootstrap: [AppComponent]

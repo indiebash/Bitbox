@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { TrackService } from 'src/app/services/track.service';
+import { Store, select } from '@ngrx/store';
+import { AppState } from 'src/app/state/app.state';
 
 @Component({
   selector: 'scrubber',
@@ -11,11 +12,11 @@ export class ScrubberComponent implements OnInit {
   interval;
   timelineWidth;
 
-  constructor(private trackService: TrackService) { 
-    this.interval = setInterval(() => {
-      this.timelineWidth = window.innerWidth * 0.8;
-      this.position = `${(this.trackService.getTime()/8)*this.timelineWidth}px`;
-    }, 10);
+  constructor(private store: Store<AppState>) {
+    this.store.pipe(select('state')).subscribe((state:AppState) => {
+      this.timelineWidth = (window.innerWidth * 0.8) - 30;
+      this.position = `${(state.time/8)*this.timelineWidth+10}px`;
+    }); 
   }
 
   ngOnInit() { }

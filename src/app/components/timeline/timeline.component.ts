@@ -19,6 +19,8 @@ export class TimelineComponent implements OnInit, AfterViewInit {
 
   constructor(private trackService: TrackService) {
     this.notes = this.notes.reverse();
+
+    window.addEventListener("resize", this.setBlocks.bind(this));
   }
 
   ngOnInit() {
@@ -65,14 +67,16 @@ export class TimelineComponent implements OnInit, AfterViewInit {
   }
 
   mouseDown(position: Coordinate) {
-    this.clicking = true;
-    this.startPosition = position;
     let block = this.getBlock(position.x, position.y);
-    block.selected = true;
-    block.class = SelectionType.selected;
-    block.end = true;
-    this.lastDragged = position;
-    //this.setRowClasses();
+    if(!block.selected) {
+      this.clicking = true;
+      this.startPosition = position;
+      block.selected = true;
+      block.class = SelectionType.selected;
+      block.end = true;
+      this.lastDragged = position;
+      //this.setRowClasses();
+    }
   }
 
   mouseUp(position: Coordinate) {
