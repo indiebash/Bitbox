@@ -12,6 +12,8 @@ import { TrackService } from './services/track.service';
 import { ScrubberComponent } from './components/scrubber/scrubber.component';
 import { StoreModule } from '@ngrx/store';
 import { stateReducer } from './state/reducers/state.reducer';
+import { timelineReducer } from './state/reducers/timeline.reducer';
+import { layerReducer } from './state/reducers/layer.reducer';
 
 @NgModule({
   declarations: [
@@ -27,7 +29,9 @@ import { stateReducer } from './state/reducers/state.reducer';
     BrowserModule,
     BrowserAnimationsModule,
     StoreModule.forRoot({ 
-      state: stateReducer 
+      misc: stateReducer,
+      timeline: timelineReducer,
+      layers: layerReducer
     })
   ],
   providers: [TrackService],

@@ -2,8 +2,7 @@
   <div class="header blue-glow">
     BitBox
   </div>
-  <div class="blue-glow">
-    layers works!
-  </div>
+  <div *ngFor="let layer of layers$ | async; let i = index" class="layer" [ngClass]="layer.color">{{i+1}}</div>
+  <div class="layer" (click)="addLayer()">+</div>
 </div>
 

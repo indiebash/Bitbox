@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
-import { AppState } from 'src/app/state/app.state';
+import { AppState, MiscState } from 'src/app/state/app.state';
 
 @Component({
   selector: 'scrubber',
@@ -13,9 +13,9 @@ export class ScrubberComponent implements OnInit {
   timelineWidth;
 
   constructor(private store: Store<AppState>) {
-    this.store.pipe(select('state')).subscribe((state:AppState) => {
+    this.store.pipe(select('misc')).subscribe((misc:MiscState) => {
       this.timelineWidth = (window.innerWidth * 0.8) - 30;
-      this.position = `${(state.time/8)*this.timelineWidth+10}px`;
+      this.position = `${(misc.time/8)*this.timelineWidth+10}px`;
     }); 
   }
 

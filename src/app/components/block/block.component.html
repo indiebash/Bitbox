@@ -1,7 +1,7 @@
 <div 
 [style.width]="data.size + 'px'"
 [style.height]="data.size + 'px'"
-(mousedown)="data.mouseDown(data.position)"
+(mousedown)="data.mouseDown(data.position, $event)"
 (mouseup)="data.mouseUp(data.position)"
 (mouseover)="data.mouseOver(data.position)"
 [className]="data.class"

@@ -7,6 +7,7 @@ import { TrackService } from 'src/app/services/track.service';
   styleUrls: ['./playback-controls.component.scss']
 })
 export class PlaybackControlsComponent implements OnInit {
+  speed = 1;
   
   constructor(private trackService: TrackService) {
 
