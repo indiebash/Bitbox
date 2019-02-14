@@ -5,7 +5,8 @@ export enum ActionTypes {
   ResetTime = '[Time] Reset',
   SetTime = '[Time] Set',
   SetDragging = '[Timeline] Dragging',
-  SetDraggingRow = '[Timeline] DraggingRow'
+  SetDraggingRow = '[Timeline] DraggingRow',
+  SelectLayer = 'Select Layer'
 }
  
 export class ResetTime implements Action {
@@ -24,6 +25,11 @@ export class SetDragging implements Action {
 
 export class SetDraggingRow implements Action {
   readonly type = ActionTypes.SetDraggingRow;
+  constructor(public payload: number) {}
+}
+
+export class SelectLayer implements Action {
+  readonly type = ActionTypes.SelectLayer;
   constructor(public payload: number) {}
 }
 

@@ -5,8 +5,8 @@
   </button>
 
   <div class="speed-control">
-      <i class="material-icons add blue-glow" (click)="speed = speed+1">keyboard_arrow_up</i>
-    <div class="value">{{speed}}</div>
-    <i class="material-icons minus blue-glow" (click)="speed = speed-1">keyboard_arrow_down</i>
+      <i class="material-icons add blue-glow" (click)="raiseSpeed()">keyboard_arrow_up</i>
+    <div class="value">{{getSpeed()}}</div>
+    <i class="material-icons minus blue-glow" (click)="lowerSpeed()">keyboard_arrow_down</i>
   </div>
 </div>

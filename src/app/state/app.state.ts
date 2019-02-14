@@ -10,4 +10,5 @@ export interface MiscState {
     time: number;
     trackLength: number;
     notes: string[];
+    selectedLayer: number
 }

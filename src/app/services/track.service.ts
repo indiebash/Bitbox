@@ -52,7 +52,7 @@ export class TrackService {
     return Tone.Transport.seconds;
   }
 
-    lastNote = new Coordinate(-10, -10);
+  lastNote = new Coordinate(-10, -10);
   setNotes(timeline: [Block[]]) {
     this.clear();
     let synth = new Tone.PolySynth(12, Tone.Synth).toMaster();

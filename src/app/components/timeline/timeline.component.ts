@@ -87,7 +87,6 @@ export class TimelineComponent implements OnInit, AfterViewInit {
         timeline[this.startPosition.x][this.startPosition.y].single = true;
         timeline[this.startPosition.x][this.startPosition.y].class = SelectionType.selected;
       }
-      //this.setNotes();
       this.store.dispatch(new SetTimeline(timeline));
     });
   }

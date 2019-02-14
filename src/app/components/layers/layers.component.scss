@@ -4,19 +4,28 @@
     background-color: $color-blue;
     color: white;
     height: 100%;
-    padding: 15px;
+    overflow-y: scroll;
+    overflow-x: hidden;
 
     .header {
-        font-size: 2em;
+        font-size: 2.5em;
         padding-bottom: 15px;
+        padding-left: 15px;
+        padding-top: 15px;
     }
 
     .layer {
-        width: 100%;
+        width: 85%;
         text-align: center;
         padding: 10px;
         font-size: 60px;
-        margin: 5px;
+        margin-bottom: 5px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .selected {
+        border: 2px solid white;
     }
 }
 
