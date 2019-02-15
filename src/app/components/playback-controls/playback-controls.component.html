@@ -4,9 +4,6 @@
     <i class="material-icons" *ngIf="trackService.playing">pause_circle_outline</i>
   </button>
 
-  <div class="speed-control">
-      <i class="material-icons add blue-glow" (click)="raiseSpeed()">keyboard_arrow_up</i>
-    <div class="value">{{getSpeed()}}</div>
-    <i class="material-icons minus blue-glow" (click)="lowerSpeed()">keyboard_arrow_down</i>
-  </div>
+  <incrementor [data]="octaveIncrementor"></incrementor>
+  <incrementor [data]="playbackRateIncrementor"></incrementor>
 </div>

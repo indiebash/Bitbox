@@ -14,6 +14,7 @@ import { StoreModule } from '@ngrx/store';
 import { stateReducer } from './state/reducers/state.reducer';
 import { timelineReducer } from './state/reducers/timeline.reducer';
 import { layerReducer } from './state/reducers/layer.reducer';
+import { IncrementorComponent } from './components/incrementor/incrementor.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { layerReducer } from './state/reducers/layer.reducer';
     PlaybackControlsComponent,
     BlockComponent,
     ScrubberComponent,
+    IncrementorComponent,
   ],
   imports: [
     BrowserModule,

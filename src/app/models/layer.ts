@@ -1,11 +1,11 @@
 export class Layer {
     octave: number;
-    speedMultiplier: number;
+    playbackRate: number;
     color: string;
 
-    constructor(octave?: number, speedMultiplier?: number, color?: string) {
+    constructor(octave?: number, playbackRate?: number, color?: string) {
         this.octave = octave ? octave : 1;
-        this.speedMultiplier = speedMultiplier ? speedMultiplier : 1;
+        this.playbackRate = playbackRate ? playbackRate : 1;
         this.color = color ? color : 'blue';
     }
 }

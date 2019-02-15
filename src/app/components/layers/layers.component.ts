@@ -28,11 +28,12 @@ export class LayersComponent implements OnInit {
 
   addLayer() {
     this.layers$.pipe(take(1)).subscribe(layers => {
-      this.store.dispatch(new AddLayer(new Layer(1, 1, this.getColor(layers.length))));
+      this.store.dispatch(new AddLayer(new Layer(1, 1, this.getLayerColor(layers.length))));
+      this.store.dispatch(new SelectLayer(layers.length));
     });
   }
 
-  getColor(layerCount) {
+  getLayerColor(layerCount) {
     if(layerCount < this.colors.length) {
       return this.colors[layerCount];
     } else {

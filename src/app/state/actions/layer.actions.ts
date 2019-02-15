@@ -3,7 +3,8 @@ import { Layer } from '../../models';
 
 export enum ActionTypes {
   AddLayer = 'Add Layer',
-  SetLayerSpeed = 'Set Layer Speed'
+  SetPlaybackRate = 'Set PlaybackRate',
+  SetOctave = 'Set Octave'
 }
  
 export class AddLayer implements Action {
@@ -11,8 +12,13 @@ export class AddLayer implements Action {
   constructor(public payload: Layer) {}
 }
 
-export class SetLayerSpeed implements Action {
-  readonly type = ActionTypes.SetLayerSpeed;
+export class SetPlaybackRate implements Action {
+  readonly type = ActionTypes.SetPlaybackRate;
+  constructor(public payload: {index: number, value: number}) {}
+}
+
+export class SetOctave implements Action {
+  readonly type = ActionTypes.SetOctave;
   constructor(public payload: {index: number, value: number}) {}
 }
 

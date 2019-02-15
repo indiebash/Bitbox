@@ -1,5 +1,4 @@
 <div class="timeline" id="timeline">
-  <scrubber></scrubber>
   <div *ngFor="let blocks of timeline$ | async">
       <block *ngFor="let block of blocks" [data]="block"></block>
   </div>
