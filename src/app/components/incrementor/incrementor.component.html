@@ -1,6 +1,7 @@
 <div class="incrementor {{data.color}}">
-  <i class="material-icons add blue-glow" (click)="data.increaseFunc()">keyboard_arrow_right</i>
-  <div class="value">{{data.value}}</div>
-  <i class="material-icons minus blue-glow" (click)="data.decreaseFunc()">keyboard_arrow_left</i>
+  <i class="material-icons add" (click)="data.increaseFunc()">keyboard_arrow_right</i>
+  <div *ngIf="!data.useIcon" class="value">{{data.value}}</div>
+  <i *ngIf="data.useIcon" class="value-icon material-icons">{{data.value}}</i>
+  <i class="material-icons minus" (click)="data.decreaseFunc()">keyboard_arrow_left</i>
   <div class="label">{{data.label}}</div>
 </div>

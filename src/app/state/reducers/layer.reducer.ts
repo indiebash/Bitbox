@@ -19,6 +19,14 @@ export function layerReducer(state = initialState, action: LayerAction) {
       newState[action.payload.index].octave = action.payload.value;
       return newState;
 
+    case ActionTypes.SetPlaybackType:
+      newState[action.payload.index].playbackType = action.payload.value;
+      return newState;
+
+    case ActionTypes.SetPitch:
+      newState[action.payload.index].pitch = action.payload.value;
+      return newState;
+
     default:
       return state;
   }

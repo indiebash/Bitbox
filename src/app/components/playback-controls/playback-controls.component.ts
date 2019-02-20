@@ -3,8 +3,9 @@ import { TrackService } from 'src/app/services/track.service';
 import { Store, select } from '@ngrx/store';
 import { AppState } from 'src/app/state/app.state';
 import { Layer } from 'src/app/models';
-import { SetPlaybackRate, SetOctave } from 'src/app/state/actions/layer.actions';
+import { SetPlaybackRate, SetOctave, SetPlaybackType, SetPitch } from 'src/app/state/actions/layer.actions';
 import { Incrementor } from '../incrementor/incrementor.component';
+import { PlaybackType } from 'src/app/enums';
 
 @Component({
   selector: 'playback-controls',
@@ -14,8 +15,7 @@ import { Incrementor } from '../incrementor/incrementor.component';
 export class PlaybackControlsComponent implements OnInit {
   layers: Layer[];
   selectedLayer: number;
-  octaveIncrementor: Incrementor;
-  playbackRateIncrementor: Incrementor;
+  incrementorControls: Incrementor[] = [];
   
   constructor(private trackService: TrackService, private store: Store<AppState>) {
     this.store.pipe(select('layers')).subscribe(layers => {
@@ -30,21 +30,40 @@ export class PlaybackControlsComponent implements OnInit {
 
   setIncrementors() {
     if(this.layers && (this.selectedLayer || this.selectedLayer >= 0)) {
-      this.octaveIncrementor = new Incrementor(
+      this.incrementorControls = [];
+
+      this.incrementorControls.push(new Incrementor(
         'Octave',
         this.getOctave(),
         this.layers[this.selectedLayer].color,
         this.raiseOctave.bind(this),
         this.lowerOctave.bind(this)
-      );
+      ));
 
-      this.playbackRateIncrementor = new Incrementor(
-        'Playback Rate',
+      this.incrementorControls.push(new Incrementor(
+        'Pitch',
+        this.getPitch(),
+        this.layers[this.selectedLayer].color,
+        this.raisePitch.bind(this),
+        this.lowerPitch.bind(this)
+      ));
+
+      this.incrementorControls.push(new Incrementor(
+        'Speed',
         this.getSpeed(),
         this.layers[this.selectedLayer].color,
         this.raiseSpeed.bind(this),
         this.lowerSpeed.bind(this)
-      );
+      ));
+
+      this.incrementorControls.push(new Incrementor(
+        'Direction',
+        this.getPlaybackIcon(),
+        this.layers[this.selectedLayer].color,
+        this.nextPlaybackType.bind(this),
+        this.previousPlaybackType.bind(this),
+        true
+      ));
     }
   }
 
@@ -86,7 +105,16 @@ export class PlaybackControlsComponent implements OnInit {
 
   getOctave() {
     if(this.layers) {
-      return this.layers[this.selectedLayer].octave;
+      switch(this.layers[this.selectedLayer].octave) {
+        case 1: return '-3';
+        case 2: return '-2';
+        case 3: return '-1';
+        case 4: return '+0';
+        case 5: return '+1';
+        case 6: return '+2';
+        case 7: return '+3';
+        case 8: return '+4';
+      }
     }
     return '-';
   }
@@ -108,6 +136,65 @@ export class PlaybackControlsComponent implements OnInit {
         new SetOctave({
           index: this.selectedLayer, 
           value: this.layers[this.selectedLayer].octave - 1
+        })
+      );
+    }
+  }
+
+  getPlaybackIcon() {
+    switch(this.layers[this.selectedLayer].playbackType) {
+      case PlaybackType.forward: return 'arrow_forward';
+      case PlaybackType.backwards: return 'arrow_back';
+      default: return '-';
+    }
+  }
+
+  nextPlaybackType() {
+    const newPlaybackType = this.layers[this.selectedLayer].playbackType === 1 ? 0 : 1
+
+    this.store.dispatch(
+      new SetPlaybackType({
+        index: this.selectedLayer, 
+        value: newPlaybackType
+      })
+    );
+  }
+
+  previousPlaybackType() {
+    const newPlaybackType = this.layers[this.selectedLayer].playbackType === 0 ? 1 : 0
+
+    this.store.dispatch(
+      new SetPlaybackType({
+        index: this.selectedLayer, 
+        value: newPlaybackType
+      })
+    );
+  }
+
+  getPitch() {
+    if(this.layers) {
+      return `${this.layers[this.selectedLayer].pitch >= 0 ? '+' : ''}${this.layers[this.selectedLayer].pitch}`
+    }
+    return '-';
+  }
+
+  raisePitch() {
+    if(this.layers[this.selectedLayer].pitch < 12) {
+      this.store.dispatch(
+        new SetPitch({
+          index: this.selectedLayer, 
+          value: this.layers[this.selectedLayer].pitch + 1
+        })
+      );
+    }
+  }
+
+  lowerPitch() {
+    if(this.layers[this.selectedLayer].pitch > -12) {
+      this.store.dispatch(
+        new SetPitch({
+          index: this.selectedLayer, 
+          value: this.layers[this.selectedLayer].pitch - 1
         })
       );
     }

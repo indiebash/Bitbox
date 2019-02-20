@@ -20,12 +20,14 @@ export class Incrementor {
   color: string;
   increaseFunc: Function;
   decreaseFunc: Function;
+  useIcon: boolean;
 
-  constructor(label: string, value: any, color: string, increaseFunc: Function, decreaseFunc: Function) {
+  constructor(label: string, value: any, color: string, increaseFunc: Function, decreaseFunc: Function, useIcon?: boolean) {
     this.label = label;
     this.value = value;
     this.color = color;
     this.increaseFunc = increaseFunc;
     this.decreaseFunc = decreaseFunc;
+    this.useIcon = useIcon;
   }
 }

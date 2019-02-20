@@ -4,6 +4,5 @@
     <i class="material-icons" *ngIf="trackService.playing">pause_circle_outline</i>
   </button>
 
-  <incrementor [data]="octaveIncrementor"></incrementor>
-  <incrementor [data]="playbackRateIncrementor"></incrementor>
+  <incrementor *ngFor="let control of incrementorControls" [data]="control"></incrementor>
 </div>

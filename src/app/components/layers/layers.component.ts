@@ -28,7 +28,7 @@ export class LayersComponent implements OnInit {
 
   addLayer() {
     this.layers$.pipe(take(1)).subscribe(layers => {
-      this.store.dispatch(new AddLayer(new Layer(1, 1, this.getLayerColor(layers.length))));
+      this.store.dispatch(new AddLayer(new Layer(4, 1, this.getLayerColor(layers.length))));
       this.store.dispatch(new SelectLayer(layers.length));
     });
   }

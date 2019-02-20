@@ -4,7 +4,7 @@ import { SetTime } from "../state/actions/state.actions";
 import { AppState } from "../state/app.state";
 import { Store, select } from "@ngrx/store";
 import { Coordinate, Block, Layer } from "../models";
-import { SelectionType } from "../enums";
+import { SelectionType, PlaybackType } from "../enums";
 
 @Injectable({
   providedIn: "root"
@@ -106,6 +106,7 @@ export class TrackService {
                 length: 1,
                 noteIndex: y
               });
+              console.log('added line note', lineNotes)
             }
             // lineNotes.push({ "time": `0:${x}`, "note": `${this.notes[y]}4`, "length": "0:1:0" });
           }
@@ -115,8 +116,8 @@ export class TrackService {
 
       let final = lineNotes.map(lineNote => {
         return {
-          time: `0:${lineNote.start}`,
-          note: `${this.notes[lineNote.noteIndex]}${layer.octave}`,
+          time: `0:${this.getNoteStart(layer, lineNote)}`,
+          note: this.getNoteWithPitch(layer, `${this.notes[lineNote.noteIndex]}${layer.octave}`),
           length: `0:${lineNote.length / layer.playbackRate}:0`
         };
       });
@@ -129,5 +130,29 @@ export class TrackService {
       part.playbackRate = layer.playbackRate;
       part.start(0);
     });
+  }
+
+  getNoteStart(layer: Layer, lineNote) {
+    const x = lineNote.start;
+    switch(layer.playbackType) {
+      case PlaybackType.backwards: 
+        if(x+1 < this.trackLength) {
+          return this.trackLength - 1 - x - (lineNote.length - 1);
+        } else {
+          return x - (this.trackLength - (this.trackLength - x)) - (lineNote.length - 1);
+        }
+      default: return x;
+    }
+  }
+
+  getNoteWithPitch(layer: Layer, note) {
+    let fullRange = [];
+    for(var i=0; i<10; i++) {
+      this.notes.forEach(note => {
+        fullRange.push(`${note}${i}`);
+      });
+    }
+    let idx = fullRange.findIndex(x => x === note);
+    return fullRange[idx - layer.pitch];
   }
 }
