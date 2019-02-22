@@ -9,6 +9,7 @@ import { LayersComponent } from './components/layers/layers.component';
 import { PlaybackControlsComponent } from './components/playback-controls/playback-controls.component';
 import { BlockComponent } from './components/block/block.component';
 import { TrackService } from './services/track.service';
+import { CanvasService } from './services/canvas.service';
 import { ScrubberComponent } from './components/scrubber/scrubber.component';
 import { StoreModule } from '@ngrx/store';
 import { stateReducer } from './state/reducers/state.reducer';
@@ -36,7 +37,7 @@ import { IncrementorComponent } from './components/incrementor/incrementor.compo
       layers: layerReducer
     })
   ],
-  providers: [TrackService],
+  providers: [TrackService, CanvasService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

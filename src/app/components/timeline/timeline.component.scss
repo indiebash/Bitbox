@@ -1,14 +1,19 @@
 @import '../../../style-variables.scss';
 
-.timeline {
-    background-color: black;
-    color: white;
-    height: 100%;
+// .timeline {
+//     background-color: black;
+//     color: white;
+//     height: 100%;
+//     width: 100%;
+//     display: flex;
+//     flex-direction: row;
+//     flex-wrap: wrap;
+//     justify-content: center;
+//     overflow-y: scroll;
+//     position: relative;
+// }
+
+canvas {
     width: 100%;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    overflow-y: scroll;
-    position: relative;
+    height: 100%;
 }

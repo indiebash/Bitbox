@@ -6,6 +6,7 @@ import { AppState } from 'src/app/state/app.state';
 import { SetTimeline } from 'src/app/state/actions/timeline.actions';
 import { take } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { CanvasService } from 'src/app/services';
 
 @Component({
   selector: 'timeline',
@@ -20,18 +21,20 @@ export class TimelineComponent implements OnInit, AfterViewInit {
   endPosition: Coordinate;
   lastDragged: Coordinate;
 
-  constructor(private store: Store<AppState>) {
-    window.addEventListener("resize", this.initializeBlocks.bind(this));
+  constructor(private store: Store<AppState>, private canvas: CanvasService) {
+    //window.addEventListener("resize", this.initializeBlocks.bind(this));
     this.timeline$ = this.store.pipe(select('timeline'));
   }
 
   ngOnInit() { }
 
   ngAfterViewInit() {
+    this.canvas.initialize();
+
     setTimeout(() => {
       this.store.pipe(select('misc', 'trackLength')).subscribe(trackLength => {
         this.trackLength = trackLength;
-        this.initializeBlocks();
+        //this.initializeBlocks();
       });
     }, 100);
   }
