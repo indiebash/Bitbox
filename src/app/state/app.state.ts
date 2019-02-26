@@ -1,8 +1,8 @@
-import { Block, Layer } from '../models';
+import { Layer, Note } from '../models';
 
 export interface AppState {
     misc: MiscState;
-    timeline: [Block[]];
+    timeline: Note[];
     layers: Layer[];
 }
 

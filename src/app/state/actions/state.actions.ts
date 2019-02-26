@@ -1,5 +1,4 @@
 import { Action } from '@ngrx/store';
-import { Block } from 'src/app/models';
  
 export enum ActionTypes {
   ResetTime = '[Time] Reset',

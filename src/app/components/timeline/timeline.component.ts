@@ -1,12 +1,9 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { SelectionType } from '../../enums';
-import { Block, Coordinate } from '../../models';
+import { ColorType } from '../../enums';
+import { Coordinate, Layer, Note } from '../../models';
 import { Store, select } from '@ngrx/store';
-import { AppState } from 'src/app/state/app.state';
-import { SetTimeline } from 'src/app/state/actions/timeline.actions';
-import { take } from 'rxjs/operators';
-import { Observable } from 'rxjs';
-import { CanvasService } from 'src/app/services';
+import { AppState, MiscState } from 'src/app/state/app.state';
+import { AddNote } from 'src/app/state/actions/timeline.actions';
 
 @Component({
   selector: 'timeline',
@@ -14,217 +11,186 @@ import { CanvasService } from 'src/app/services';
   styleUrls: ['./timeline.component.scss']
 })
 export class TimelineComponent implements OnInit, AfterViewInit {
-  trackLength: number;
-  timeline$: Observable<[Block[]]>;
-  clicking: boolean;
-  startPosition: Coordinate;
-  endPosition: Coordinate;
-  lastDragged: Coordinate;
+  canvas: HTMLCanvasElement;
+  ctx: CanvasRenderingContext2D;
+  layers: Layer[] = [];
+  state: MiscState;
+  lineHeight: number;
+  columnWidth: number;
+  position: Coordinate;
+  timeline: Note[] = [];
 
-  constructor(private store: Store<AppState>, private canvas: CanvasService) {
-    //window.addEventListener("resize", this.initializeBlocks.bind(this));
-    this.timeline$ = this.store.pipe(select('timeline'));
-  }
+  constructor(private store: Store<AppState>) { }
 
   ngOnInit() { }
 
   ngAfterViewInit() {
-    this.canvas.initialize();
+    this.canvas = <HTMLCanvasElement>document.getElementById("canvas");
+    this.ctx = this.canvas.getContext("2d");
+    this.canvas.onmousemove = this.mouseOver.bind(this);
+    this.canvas.onmouseleave = this.mouseLeave.bind(this);
+    this.drawCanvas();
 
-    setTimeout(() => {
-      this.store.pipe(select('misc', 'trackLength')).subscribe(trackLength => {
-        this.trackLength = trackLength;
-        //this.initializeBlocks();
-      });
-    }, 100);
+    window.addEventListener("resize", this.drawCanvas.bind(this));
+
+    this.store.pipe(select('layers')).subscribe(layers => {
+      this.layers = layers;
+      this.drawCanvas();
+    });
+
+    this.store.pipe(select('misc')).subscribe((misc: MiscState) => {
+      this.state = misc;
+      this.drawCanvas();
+    });
+
+    this.store.pipe(select('timeline')).subscribe(timeline => {
+      this.timeline = timeline;
+      this.drawCanvas();
+    });
+  }
+
+  mouseOver(e: MouseEvent) {
+    let rect = this.canvas.getBoundingClientRect();
+    let x = e.clientX - rect.left;
+    let y = e.clientY - rect.top;
+    let yPos = Math.trunc(y/(this.canvas.height/12));
+    let xPos = Math.trunc(x/(this.canvas.width/this.state.trackLength));
+    if(!this.position || this.position.x !== xPos || this.position.y !== yPos) {
+      console.log('Position Changed');
+      this.position = new Coordinate(xPos, yPos);
+    }
+    this.drawCanvas();
+  }
+
+  mouseLeave(e: MouseEvent) {
+    this.position = undefined;
+    this.drawCanvas();
+  }
+
+  mouseUp() {
+
+  }
+
+  mouseDown() {
+      if(!this.getNote(this.position)) {
+        this.store.dispatch(new AddNote(new Note(this.position)));
+      }
+  }
+
+  getNote(position: Coordinate) {
+    return false;
+  }
+
+  drawNotes() {
+    this.ctx.fillStyle = ColorType[this.layers[this.state.selectedLayer].color];
+    this.ctx.shadowBlur = 50;
+    this.ctx.shadowColor = ColorType[this.layers[this.state.selectedLayer].color];
+
+    this.timeline.forEach(note => {
+      this.roundRect(
+        note.position.x * this.columnWidth + 2.5,
+        note.position.y * this.lineHeight + 2.5,
+        note.length * this.columnWidth - 5,
+        this.lineHeight - 5,
+        5,
+        true
+      );
+    });
+    this.ctx.shadowBlur = 0;
+  }
+
+  highlightNote(xIndex: number, yIndex: number) {
+    this.ctx.fillStyle = "#444";
+    this.ctx.globalAlpha = 0.5;
+    this.roundRect(
+      xIndex*this.canvas.width/this.state.trackLength+2.5, 
+      yIndex*this.canvas.height/12+2.5, 
+      this.canvas.width / this.state.trackLength-5,
+      this.lineHeight-5,
+      5,
+      true
+    );
+    this.ctx.globalAlpha = 1;
+  }
+
+  highlightRow(yIndex: number) {
+    this.ctx.fillStyle = "#444";
+    this.ctx.globalAlpha = 0.3;
+    this.ctx.fillRect(0,yIndex*this.canvas.height/12,this.canvas.width,this.canvas.height/12);
+    this.ctx.globalAlpha = 1;
+  }
+
+  drawCanvas() {
+    if (this.state) {
+      this.canvas.width = window.innerWidth * 0.8;
+      this.canvas.height = window.innerHeight * 0.8;
+      this.lineHeight = this.canvas.height / 12;
+      this.columnWidth = this.canvas.width / this.state.trackLength;
+      this.drawTimelineBackground();
+      this.drawGrid();
+
+      // Mouse over canvas
+      if (this.position) {
+        this.highlightRow(this.position.y);
+        this.highlightNote(this.position.x, this.position.y);
+      }
+
+      this.drawNotes();
+    }
+  }
+
+  drawGrid() {
+    this.ctx.globalAlpha = 0.5;
+    this.ctx.fillStyle = "#444";
+    if(this.state) {
+      for(var x=0; x<this.state.trackLength; x++) {
+        for(var y=0; y<this.state.notes.length; y++) {
+          //this.ctx.fillRect(x*columnWidth+5, y*this.lineHeight+5, columnWidth-5, this.lineHeight-5);
+          this.roundRect(x*this.columnWidth+2.5, y*this.lineHeight+2.5, this.columnWidth-5, this.lineHeight-5, 5, true);
+        }  
+      }
+    }
+    this.ctx.globalAlpha = 1;
+  }
+
+  drawTimelineBackground() {
+    this.ctx.fillStyle = "#000";
+    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.fillStyle = "#222";
+    this.ctx.strokeStyle = "#fff";
+    this.ctx.lineWidth = 2;
+    this.ctx.globalAlpha = 0.5;
+
+    if (this.state) {
+      for (var i = 0; i < this.state.trackLength / 4; i++) {
+        this.ctx.fillRect(
+          this.canvas.width / (this.state.trackLength / 4) + (i * (this.canvas.width / (this.state.trackLength / 8))),
+          0,
+          this.canvas.width / (this.state.trackLength / 4),
+          this.canvas.height
+        );
+      }
+    }
+    this.ctx.globalAlpha = 1;
+  }
+
+  roundRect(x: number, y: number, width: number, height: number, radius: number, fill: boolean) {
+    this.ctx.beginPath();
+    this.ctx.moveTo(x + radius, y);
+    this.ctx.lineTo(x + width - radius, y);
+    this.ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+    this.ctx.lineTo(x + width, y + height - radius);
+    this.ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+    this.ctx.lineTo(x + radius, y + height);
+    this.ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+    this.ctx.lineTo(x, y + radius);
+    this.ctx.quadraticCurveTo(x, y, x + radius, y);
+    this.ctx.closePath();
+    if (fill) {
+      this.ctx.fill();
+    } else {
+      this.ctx.stroke();
+    }
   }
  
-  initializeBlocks() {
-    let initialTimeline: [Block[]] = [[]];
-    const size = (document.getElementById('timeline').clientWidth / (this.trackLength) * 0.98) - 10;
-
-    for(let x=0; x<this.trackLength; x++) {
-      initialTimeline[x] = [];
-      for(let y=0; y<12; y++){
-        initialTimeline[x].push({
-            size: size,
-            mouseUp: this.mouseUp.bind(this),
-            mouseDown: this.mouseDown.bind(this),
-            mouseOver: this.mouseOver.bind(this),
-            position: {x: x, y: y},
-            class: 'unselected',
-            selected: false,
-            end: false,
-            single: false
-          });
-      }
-    }
-    this.store.dispatch(new SetTimeline(initialTimeline));
-  }
-
-  mouseDown(position: Coordinate, event) {
-    this.timeline$.pipe(take(1)).subscribe(timeline => {
-      let block = this.getBlock(timeline, position);
-      if(!block.selected) {
-        this.clicking = true;
-        this.startPosition = position;
-        block.selected = true;
-        block.class = SelectionType.selected;
-        block.end = true;
-        this.lastDragged = position;
-        this.store.dispatch(new SetTimeline(timeline));
-      }    
-    });
-  }
-
-  mouseUp(position: Coordinate) {
-    this.timeline$.pipe(take(1)).subscribe(timeline => {
-      this.clicking = false;
-      this.endPosition = position;
-      if(this.endPosition.x > this.lastDragged.x+1 || this.endPosition.x < this.lastDragged.x-1) {
-        this.getBlock(timeline, new Coordinate(this.lastDragged.x, this.startPosition.y)).end = true;
-      } else {
-        this.getBlock(timeline, new Coordinate(position.x, this.startPosition.y)).end = true;
-      }
-      if(this.startPosition.x === this.endPosition.x){
-        timeline[this.startPosition.x][this.startPosition.y].single = true;
-        timeline[this.startPosition.x][this.startPosition.y].class = SelectionType.selected;
-      }
-      this.store.dispatch(new SetTimeline(timeline));
-    });
-  }
-
-  mouseOver(position: Coordinate) {
-    this.timeline$.pipe(take(1)).subscribe(timeline => {
-      if(this.clicking 
-        && !timeline[position.x][this.startPosition.y].selected
-        && (this.lastDragged.x === position.x+1 || this.lastDragged.x === position.x-1)
-        ) {
-        timeline[position.x][this.startPosition.y].selected = true;
-        timeline[position.x][this.startPosition.y].single = false;
-        if(position.x > this.lastDragged.x) {
-          //console.log('moving right');
-          timeline[position.x][this.startPosition.y].class = SelectionType.right;
-          this.setPreviousLeft(timeline, new Coordinate(position.x, this.startPosition.y));
-          if(position.x <= this.startPosition.x) {
-            timeline[position.x-1][this.startPosition.y].selected = false;
-          }
-        } else if (position.x < this.lastDragged.x) {
-          //console.log('moving left');
-          timeline[position.x][this.startPosition.y].class = SelectionType.left;
-          this.setPreviousRight(timeline, new Coordinate(position.x, this.startPosition.y));
-          if(position.x >= this.startPosition.x) {
-            timeline[position.x+1][this.startPosition.y].selected = false;
-          }
-        } else {
-          //console.log('at origin');                
-        }
-        this.lastDragged = position;
-        this.store.dispatch(new SetTimeline(timeline));
-      }
-    });
-  }
-
-  setPreviousLeft(timeline: [Block[]], position: Coordinate) {
-    if(position.x > 0) {
-      let block = this.getBlock(timeline, new Coordinate(position.x-1, position.y));
-      if(block.selected) {
-        if(block.end) {
-          block.class = SelectionType.left;
-        } else {
-          block.class = SelectionType.center;
-        }
-      }
-    }
-  }
-
-  setPreviousRight(timeline: [Block[]], position: Coordinate) {
-    if(position.x < this.trackLength-1) {
-      let block = this.getBlock(timeline, new Coordinate(position.x+1, position.y));
-      if(block.selected) {
-        if(block.end) {
-          block.class = SelectionType.right;
-        } else {
-          block.class = SelectionType.center;
-        }
-      }
-    }
-  }
-
-  // setNextRight(x: number, y: number) {
-  //   if(x < this.timeline.length-1) {
-  //     let block = this.getBlock(x+1, y);
-  //   }
-  // }
-
-  // setBlockState(x: number, y: number) {
-  //   if(x >= 0 && x <= this.timeline.length) {
-  //     let block = this.getBlock(x,y);
-  //     if(block.selected) {
-  //       if(this.isOnLeft(block.position) && !block.single) {
-  //         block.class = SelectionType.left;
-  //       } else if (this.isInCenter(block.position) && !block.single) {
-  //         block.class = SelectionType.center;
-  //       } else if (this.isOnRight(block.position) && !block.single) {
-  //         block.class = SelectionType.right;
-  //       } else {
-  //         block.class = SelectionType.selected;
-  //       }
-  //     } else {
-  //       block.class = SelectionType.unselected;
-  //       block.end = false;
-  //     }
-  //   }
-  // }
-
-  // setRowClasses() {
-  //   for(let i=0; i<this.trackLength; i++) {
-  //     let block = this.getBlock(i, this.startPosition.y);
-  //     if(block.selected) {
-  //       if(this.isOnLeft(block.position) && !block.single) {
-  //         block.class = SelectionType.left;
-  //       } else if (this.isInCenter(block.position) && !block.single) {
-  //         block.class = SelectionType.center;
-  //       } else if (this.isOnRight(block.position) && !block.single) {
-  //         block.class = SelectionType.right;
-  //       } else {
-  //         block.class = SelectionType.selected;
-  //       }
-  //     } else {
-  //       block.class = SelectionType.unselected;
-  //     }
-  //   }
-  // }
-
-  // isOnLeft(position: Coordinate) {
-  //   let rightBlock = this.getRightBlock(position);
-  //   let leftBlock = this.getLeftBlock(position);
-  //   return rightBlock 
-  //   && rightBlock.selected 
-  //   && (rightBlock.class === SelectionType.right || rightBlock.class === SelectionType.center)
-  //   && (!leftBlock || !leftBlock.selected || leftBlock.class !== SelectionType.right);
-  // }
-
-  // isOnRight(position: Coordinate) {
-  //   let rightBlock = this.getRightBlock(position);
-  //   let leftBlock = this.getLeftBlock(position);
-  //   return leftBlock && rightBlock.selected && (!rightBlock || !rightBlock.selected);
-  // }
-
-  // isInCenter(position: Coordinate) {
-  //   return this.getRightBlock(position) && this.getRightBlock(position).selected 
-  //   && this.getLeftBlock(position) && this.getLeftBlock(position).selected
-  // }
-
-  getBlock(timeline: [Block[]], position: Coordinate) {
-    return timeline[position.x][position.y];
-  }
-
-  // getRightBlock(position: Coordinate) {
-  //   return position.x !== this.trackLength - 1 ? this.getBlock(position.x+1, position.y): undefined;
-  // }
-
-  // getLeftBlock(position: Coordinate) {
-  //   return position.x !== 0 ? this.getBlock(position.x-1, position.y): undefined;
-  // }
 }

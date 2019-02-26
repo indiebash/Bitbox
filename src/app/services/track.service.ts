@@ -3,7 +3,7 @@ import * as Tone from "tone";
 import { SetTime } from "../state/actions/state.actions";
 import { AppState } from "../state/app.state";
 import { Store, select } from "@ngrx/store";
-import { Coordinate, Block, Layer } from "../models";
+import { Coordinate, Layer, Note } from "../models";
 import { SelectionType, PlaybackType } from "../enums";
 
 @Injectable({
@@ -74,72 +74,89 @@ export class TrackService {
     return Tone.Transport.seconds;
   }
 
-  lastNote = new Coordinate(-10, -10);
-  setNotes(timeline: [Block[]]) {
+  //lastNote = new Coordinate(-10, -10);
+  setNotes(timeline: Note[]) {
     this.clear();
     let synth = new Tone.PolySynth(12, Tone.Synth).toMaster();
 
     this.layers.forEach(layer => {
-      let lineNotes = [];
-      let lastNote: Coordinate = undefined;
-      // start, length, noteIndex
-      for (let y = 0; y < this.notes.length; y++) {
-        lastNote = new Coordinate(-10, -10);
-        for (let x = 0; x < this.trackLength; x++) {
-          if (timeline[x][y].selected) {
-            console.log("checking x:" + x, x - 1);
-            console.log("lastNote", this.lastNote);
-            if (
-              this.lastNote.x === x - 1 &&
-              this.lastNote.y === y &&
-              (timeline[x - 1][y].class === SelectionType.center ||
-                timeline[x - 1][y].class === SelectionType.left)
-            ) {
-              console.log("lastNote found! Extending note", { x: x, y: y });
-              lineNotes[lineNotes.length - 1].length += 1;
-              this.lastNote = new Coordinate(x, y);
-            } else {
-              this.lastNote = new Coordinate(x, y);
-              console.log("just set lastNote", x);
-              lineNotes.push({
-                start: x,
-                length: 1,
-                noteIndex: y
-              });
-              console.log('added line note', lineNotes)
-            }
-            // lineNotes.push({ "time": `0:${x}`, "note": `${this.notes[y]}4`, "length": "0:1:0" });
-          }
-        }
-      }
-      console.log("notes", lineNotes);
-
-      let final = lineNotes.map(lineNote => {
+      let final = timeline.map(note => {
         return {
-          time: `0:${this.getNoteStart(layer, lineNote)}`,
-          note: this.getNoteWithPitch(layer, `${this.notes[lineNote.noteIndex]}${layer.octave}`),
-          length: `0:${lineNote.length / layer.playbackRate}:0`
+          time: `0:${this.getNoteStart(layer, note)}`,
+          note: this.getNoteWithPitch(layer, `${this.notes[note.position.y]}${layer.octave}`),
+          length: `0:${note.length / layer.playbackRate}:0`
         };
       });
-      let part = new Tone.Part(function(time, value) {
-        synth.triggerAttackRelease(value.note, value.length, time);
-      }, final); 
 
+      let part = new Tone.Part(function (time, value) {
+        synth.triggerAttackRelease(value.note, value.length, time);
+      }, final);
       part.loop = true;
       part.loopEnd = `0:16`
       part.playbackRate = layer.playbackRate;
       part.start(0);
     });
+    
+    //   let lineNotes = [];
+    //   let lastNote: Coordinate = undefined;
+    //   // start, length, noteIndex
+    //   for (let y = 0; y < this.notes.length; y++) {
+    //     lastNote = new Coordinate(-10, -10);
+    //     for (let x = 0; x < this.trackLength; x++) {
+    //       if (timeline[x][y].selected) {
+    //         console.log("checking x:" + x, x - 1);
+    //         console.log("lastNote", this.lastNote);
+    //         if (
+    //           this.lastNote.x === x - 1 &&
+    //           this.lastNote.y === y &&
+    //           (timeline[x - 1][y].class === SelectionType.center ||
+    //             timeline[x - 1][y].class === SelectionType.left)
+    //         ) {
+    //           console.log("lastNote found! Extending note", { x: x, y: y });
+    //           lineNotes[lineNotes.length - 1].length += 1;
+    //           this.lastNote = new Coordinate(x, y);
+    //         } else {
+    //           this.lastNote = new Coordinate(x, y);
+    //           console.log("just set lastNote", x);
+    //           lineNotes.push({
+    //             start: x,
+    //             length: 1,
+    //             noteIndex: y
+    //           });
+    //           console.log('added line note', lineNotes)
+    //         }
+    //         // lineNotes.push({ "time": `0:${x}`, "note": `${this.notes[y]}4`, "length": "0:1:0" });
+    //       }
+    //     }
+    //   }
+    //   console.log("notes", lineNotes);
+
+    //   let final = lineNotes.map(lineNote => {
+    //     return {
+    //       time: `0:${this.getNoteStart(layer, lineNote)}`,
+    //       note: this.getNoteWithPitch(layer, `${this.notes[lineNote.noteIndex]}${layer.octave}`),
+    //       length: `0:${lineNote.length / layer.playbackRate}:0`
+    //     };
+    //   });
+    //   let part = new Tone.Part(function(time, value) {
+    //     synth.triggerAttackRelease(value.note, value.length, time);
+    //   }, final); 
+
+    //   part.loop = true;
+    //   part.loopEnd = `0:16`
+    //   part.playbackRate = layer.playbackRate;
+    //   part.start(0);
+    // });
   }
 
-  getNoteStart(layer: Layer, lineNote) {
-    const x = lineNote.start;
+  getNoteStart(layer: Layer, note: Note) {
+    const x = note.position.x;
     switch(layer.playbackType) {
       case PlaybackType.backwards: 
         if(x+1 < this.trackLength) {
-          return this.trackLength - 1 - x - (lineNote.length - 1);
+          return this.trackLength - 1 - x - (note.length - 1);
         } else {
-          return x - (this.trackLength - (this.trackLength - x)) - (lineNote.length - 1);
+          return x - (this.trackLength - (this.trackLength - x)) - (note.length - 1);
         }
       default: return x;
     }

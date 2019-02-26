@@ -3,4 +3,8 @@
       <block *ngFor="let block of blocks" [data]="block"></block>
   </div>
 </div> -->
-<canvas id="canvas"></canvas>
+<canvas 
+  id="canvas"
+  (mousedown)="mouseDown($event)"
+  (mouseup)="mouseUp($event)"
+></canvas>
