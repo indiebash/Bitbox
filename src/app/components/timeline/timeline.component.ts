@@ -3,7 +3,7 @@ import { ColorType } from '../../enums';
 import { Coordinate, Layer, Note } from '../../models';
 import { Store, select } from '@ngrx/store';
 import { AppState, MiscState } from 'src/app/state/app.state';
-import { AddNote } from 'src/app/state/actions/timeline.actions';
+import { AddNote, ExtendNoteRight, ExtendNoteLeft, DeleteNote } from 'src/app/state/actions/timeline.actions';
 
 @Component({
   selector: 'timeline',
@@ -19,12 +19,21 @@ export class TimelineComponent implements OnInit, AfterViewInit {
   columnWidth: number;
   position: Coordinate;
   timeline: Note[] = [];
+  dragging: boolean = false;
+  startPos: Coordinate;
+  deleting: boolean = false;
 
   constructor(private store: Store<AppState>) { }
 
   ngOnInit() { }
 
   ngAfterViewInit() {
+    
+    // Prevent menu during right click
+    document.addEventListener("contextmenu", function (e) {
+      e.preventDefault();
+    }, false);
+
     this.canvas = <HTMLCanvasElement>document.getElementById("canvas");
     this.ctx = this.canvas.getContext("2d");
     this.canvas.onmousemove = this.mouseOver.bind(this);
@@ -56,7 +65,21 @@ export class TimelineComponent implements OnInit, AfterViewInit {
     let yPos = Math.trunc(y/(this.canvas.height/12));
     let xPos = Math.trunc(x/(this.canvas.width/this.state.trackLength));
     if(!this.position || this.position.x !== xPos || this.position.y !== yPos) {
-      console.log('Position Changed');
+      // Position Changed
+      if(this.dragging) {
+        let note = this.getNote(this.startPos);
+        if(xPos > this.position.x) {
+          // Dragged right
+          if(!this.getNote(new Coordinate(xPos, yPos)) && xPos === note.position.x + note.length) {
+            this.store.dispatch(new ExtendNoteRight(note));
+          }
+        } else if(xPos < this.position.x) {
+          // Dragged left
+          if(!this.getNote(new Coordinate(xPos, yPos)) && xPos === note.position.x - 1) {
+            this.store.dispatch(new ExtendNoteLeft(note));
+          }
+        }
+      }
       this.position = new Coordinate(xPos, yPos);
     }
     this.drawCanvas();
@@ -64,21 +87,34 @@ export class TimelineComponent implements OnInit, AfterViewInit {
 
   mouseLeave(e: MouseEvent) {
     this.position = undefined;
+    this.dragging = false;
+    this.startPos = undefined;
     this.drawCanvas();
   }
 
   mouseUp() {
-
+    this.position = undefined;
+    this.dragging = false;
+    this.startPos = undefined;
   }
 
-  mouseDown() {
-      if(!this.getNote(this.position)) {
+  mouseDown(e: MouseEvent) {
+    this.deleting = e.button !== 0;
+      this.startPos = {...this.position};
+      this.dragging = true;
+      if(!this.getNote(this.position) && !this.deleting) {
         this.store.dispatch(new AddNote(new Note(this.position)));
+      } else if(this.getNote(this.position) && this.deleting) {
+        this.store.dispatch(new DeleteNote(this.getNote(this.position)));
       }
   }
 
   getNote(position: Coordinate) {
-    return false;
+    return this.position ? this.timeline.find(note => 
+      note.position.y === position.y
+      && position.x >= note.position.x
+      && position.x <= note.position.x+note.length-1
+    ) : undefined;
   }
 
   drawNotes() {
