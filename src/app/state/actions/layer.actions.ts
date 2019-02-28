@@ -7,7 +7,8 @@ export enum ActionTypes {
   SetPlaybackRate = 'Set PlaybackRate',
   SetOctave = 'Set Octave',
   SetPlaybackType = 'Set Playback Type',
-  SetPitch = 'Set Pitch'
+  SetPitch = 'Set Pitch',
+  SetPlaying = 'Set Playing'
 }
  
 export class AddLayer implements Action {
@@ -33,6 +34,11 @@ export class SetPlaybackType implements Action {
 export class SetPitch implements Action {
   readonly type = ActionTypes.SetPitch;
   constructor(public payload: {index: number, value: number}) {}
+}
+
+export class SetPlaying implements Action {
+  readonly type = ActionTypes.SetPlaying;
+  constructor(public payload: {index: number, value: boolean}) {}
 }
 
 export type LayerAction = {type: ActionTypes, payload: any}

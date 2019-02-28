@@ -16,25 +16,52 @@
 
     .layer {
         width: 85%;
-        text-align: center;
         padding: 10px;
         font-size: 40px;
         margin-bottom: 20px;
-        margin-left: auto;
-        margin-right: auto;
+        position: relative;
+        border-radius: 0px 5px 5px 0px;
 
-        span {
+        div {
             text-shadow: 0px 0px 10px white;
+            padding-left: 15px;
+            display: inline-block;
+            width: calc(100% - 90px);
+            height: 100%;
         }
 
-        &:hover {
-            font-size: 60px;
+        button{
+            position: absolute;
+            right: 0px;
+            top: 0px;
+            color: white;
+            border: none;
+            height: 100%;
+            background-color: transparent;
+
+            i {
+                font-size: 50px;
+                text-shadow: 0px 0px 15px darken(white, 10%);
+            }
+        }
+
+        button:focus {
+            outline:none;
         }
     }
 
     .selected {
-        font-size: 60px;
+        // font-size: 60px;
     }
+}
+
+.add-layer-btn {
+    text-align: center;
+    font-size: 40px;
+    background-color: rgba(255,255,255, 0.1);
+    width: 85%;
+    border-radius: 0px 5px 5px 0px;
+    padding: 10px;
 }
 
 .blue {

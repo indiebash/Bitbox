@@ -3,9 +3,10 @@ import { Store, select } from '@ngrx/store';
 import { AppState } from 'src/app/state/app.state';
 import { Observable } from 'rxjs';
 import { Layer } from 'src/app/models';
-import { AddLayer } from 'src/app/state/actions/layer.actions';
+import { AddLayer, SetPlaying } from 'src/app/state/actions/layer.actions';
 import { take } from 'rxjs/operators';
 import { SelectLayer } from 'src/app/state/actions/state.actions';
+import { TrackService } from 'src/app/services';
 
 @Component({
   selector: 'layers',
@@ -17,7 +18,7 @@ export class LayersComponent implements OnInit {
   colors: string[] = ['blue', 'pink', 'mint', 'purple'];
   selectedLayer: number;
 
-  constructor(private store: Store<AppState>) {
+  constructor(private store: Store<AppState>, private trackService: TrackService) {
     this.layers$ = this.store.pipe(select('layers'));
     this.store.pipe(select('misc', 'selectedLayer')).subscribe(selectedLayer => {
       this.selectedLayer = selectedLayer;
@@ -39,6 +40,17 @@ export class LayersComponent implements OnInit {
     } else {
       return this.colors[layerCount%this.colors.length];
     }
+  }
+
+  togglePlay(index: number, play: boolean) {
+    this.layers$.pipe(take(1)).subscribe(layers => {
+      if(!layers.some(x => x.playing) && play) {
+        this.trackService.startTrack();
+      } else if(layers.filter(layer => layer.playing).length === 1 && !play) {
+        this.trackService.stopTrack();
+      }
+      this.store.dispatch(new SetPlaying({index: index, value: play}));
+    });
   }
 
   selectLayer(index: number) {

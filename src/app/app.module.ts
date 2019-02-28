@@ -8,7 +8,6 @@ import { TimelineComponent } from './components/timeline/timeline.component';
 import { LayersComponent } from './components/layers/layers.component';
 import { PlaybackControlsComponent } from './components/playback-controls/playback-controls.component';
 import { TrackService } from './services/track.service';
-import { ScrubberComponent } from './components/scrubber/scrubber.component';
 import { StoreModule } from '@ngrx/store';
 import { stateReducer } from './state/reducers/state.reducer';
 import { timelineReducer } from './state/reducers/timeline.reducer';
@@ -22,7 +21,6 @@ import { IncrementorComponent } from './components/incrementor/incrementor.compo
     TimelineComponent,
     LayersComponent,
     PlaybackControlsComponent,
-    ScrubberComponent,
     IncrementorComponent,
   ],
   imports: [

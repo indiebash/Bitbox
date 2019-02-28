@@ -1,10 +1,10 @@
-import { Injectable, OnInit } from "@angular/core";
+import { Injectable } from "@angular/core";
 import * as Tone from "tone";
 import { SetTime } from "../state/actions/state.actions";
 import { AppState } from "../state/app.state";
 import { Store, select } from "@ngrx/store";
-import { Coordinate, Layer, Note } from "../models";
-import { SelectionType, PlaybackType } from "../enums";
+import { Layer, Note } from "../models";
+import { PlaybackType } from "../enums";
 
 @Injectable({
   providedIn: "root"
@@ -53,6 +53,19 @@ export class TrackService {
     }
   }
 
+  public stopTrack() {
+    Tone.Transport.stop();
+    clearInterval(this.interval);
+    this.store.dispatch(new SetTime(this.getTime()));
+  }
+
+  public startTrack() {
+    Tone.Transport.start();
+    this.interval = setInterval(() => {
+      this.store.dispatch(new SetTime(this.getTime()));
+    }, 10);
+  }
+
   public togglePlay() {
     this.playing = !this.playing;
     if (this.playing) {
@@ -79,7 +92,7 @@ export class TrackService {
     this.clear();
     let synth = new Tone.PolySynth(12, Tone.Synth).toMaster();
 
-    this.layers.forEach(layer => {
+    this.layers.filter(layer => layer.playing).forEach(layer => {
       let final = timeline.map(note => {
         return {
           time: `0:${this.getNoteStart(layer, note)}`,

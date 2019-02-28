@@ -2,7 +2,19 @@
   <div class="header">
     BitBox
   </div>
-  <div *ngFor="let layer of layers$ | async; let i = index" class="layer {{layer.color}}" [ngClass]="{'selected': selectedLayer === i}" (click)="selectLayer(i)"><span>{{i+1}}</span></div>
-  <div class="layer" (click)="addLayer()">+</div>
-</div>
+  <div
+    *ngFor="let layer of (layers$ | async); let i = index"
+    class="layer {{ layer.color }}"
+    [ngClass]="{ selected: selectedLayer === i }"
+    (click)="selectLayer(i)"
+  >
+    <div>{{ i + 1 }}</div>
 
+    <button (click)="togglePlay(i, !layer.playing)">
+      <i class="material-icons" *ngIf="!layer.playing">play_arrow</i>
+      <i class="material-icons" *ngIf="layer.playing">stop</i>
+    </button>
+
+  </div>
+  <div class="add-layer-btn" (click)="addLayer()">+</div>
+</div>

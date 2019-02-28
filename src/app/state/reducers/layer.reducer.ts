@@ -26,6 +26,10 @@ export function layerReducer(state = initialState, action: LayerAction) {
     case ActionTypes.SetPitch:
       newState[action.payload.index].pitch = action.payload.value;
       return newState;
+    
+    case ActionTypes.SetPlaying:
+      newState[action.payload.index].playing = action.payload.value;
+      return newState;
 
     default:
       return state;

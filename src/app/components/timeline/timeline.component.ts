@@ -1,5 +1,5 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { ColorType } from '../../enums';
+import { ColorType, PlaybackType } from '../../enums';
 import { Coordinate, Layer, Note } from '../../models';
 import { Store, select } from '@ngrx/store';
 import { AppState, MiscState } from 'src/app/state/app.state';
@@ -172,6 +172,7 @@ export class TimelineComponent implements OnInit, AfterViewInit {
       }
 
       this.drawNotes();
+      this.drawScrubbers();
     }
   }
 
@@ -208,6 +209,27 @@ export class TimelineComponent implements OnInit, AfterViewInit {
       }
     }
     this.ctx.globalAlpha = 1;
+  }
+
+  drawScrubbers() {
+    this.ctx.shadowBlur = 25;
+    this.ctx.lineWidth = 2;
+    this.layers.filter(layer => layer.playing).forEach(layer => {
+      this.ctx.strokeStyle = ColorType[layer.color];
+      this.ctx.shadowColor = ColorType[layer.color];
+      let xPos;
+      if(layer.playbackType === PlaybackType.forward) {
+        xPos = (this.state.time/8%8*layer.playbackRate%1)*this.canvas.width;
+      } else if (layer.playbackType === PlaybackType.backwards) {
+        xPos = ((1-(this.state.time/8%8*layer.playbackRate%1))*this.canvas.width);
+      }
+
+      this.ctx.beginPath();
+      this.ctx.moveTo(xPos, 0);
+      this.ctx.lineTo(xPos, this.canvas.height);
+      this.ctx.stroke();
+    });
+    this.ctx.shadowBlur = 0;
   }
 
   roundRect(x: number, y: number, width: number, height: number, radius: number, fill: boolean) {

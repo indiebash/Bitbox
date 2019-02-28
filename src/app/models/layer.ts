@@ -6,6 +6,7 @@ export class Layer {
     color: string;
     playbackType: PlaybackType;
     pitch: number;
+    playing: false = false;
 
     constructor(octave?: number, playbackRate?: number, color?: string, playbackType?: PlaybackType, pitch?: number) {
         this.octave = octave ? octave : 4;

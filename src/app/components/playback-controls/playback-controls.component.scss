@@ -7,19 +7,6 @@
     position: relative;
 }
 
-button {
-    background-color: transparent;
-    border: none;
-    i {
-        color: $color-neon-blue;
-        font-size: 40px;
-    }
-
-    &:focus {
-        outline: none;
-    }
-}
-
 .speed-control {
     border: 4px solid $color-neon-blue;
     border-radius: 30px;
