@@ -5,12 +5,12 @@
   <div
     *ngFor="let layer of (layers$ | async); let i = index"
     class="layer {{ layer.color }}"
-    [ngClass]="{ selected: selectedLayer === i }"
+    [ngClass]="{ selected: selectedLayer === i, playing: layer.playing }"
     (click)="selectLayer(i)"
   >
     <div>{{ i + 1 }}</div>
 
-    <button (click)="togglePlay(i, !layer.playing)">
+    <button (click)="togglePlay(i, !layer.playing); $event.stopPropagation()">
       <i class="material-icons" *ngIf="!layer.playing">play_arrow</i>
       <i class="material-icons" *ngIf="layer.playing">stop</i>
     </button>

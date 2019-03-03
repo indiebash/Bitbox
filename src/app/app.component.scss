@@ -5,17 +5,17 @@ header {
 
 layers { 
     grid-area: layers;
-    height: 80vh; 
+    height: 100vh; 
 }
 
 timeline { 
     grid-area: timeline;
-    height: 80vh;
+    height: calc(100vh - 115px);
 }
 
 playback-controls { 
     grid-area: playback-controls; 
-    height: 20vh;
+    height: 115px;
 }
 
 .grid-container {
@@ -25,5 +25,5 @@ playback-controls {
     grid-template-columns: 20% 80%;
     grid-template-areas:
     'layers timeline'
-    'playback-controls playback-controls';
+    'layers playback-controls';
 }

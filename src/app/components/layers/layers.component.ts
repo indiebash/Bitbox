@@ -15,7 +15,7 @@ import { TrackService } from 'src/app/services';
 })
 export class LayersComponent implements OnInit {
   layers$: Observable<Layer[]>;
-  colors: string[] = ['blue', 'pink', 'mint', 'purple'];
+  colors: string[] = ['blue', 'pink', 'mint', 'purple', 'orange'];
   selectedLayer: number;
 
   constructor(private store: Store<AppState>, private trackService: TrackService) {

@@ -5,6 +5,7 @@ import { AppState } from "../state/app.state";
 import { Store, select } from "@ngrx/store";
 import { Layer, Note } from "../models";
 import { PlaybackType } from "../enums";
+import { MidiService } from "./midi.service";
 
 @Injectable({
   providedIn: "root"
@@ -17,7 +18,7 @@ export class TrackService {
   layers: Layer[] = [];
   timeline;
 
-  constructor(private store: Store<AppState>) {
+  constructor(private store: Store<AppState>, private midiService: MidiService) {
     Tone.Transport.loop = true;
     Tone.Transport.loopStart = 0;
     Tone.Transport.loopEnd = `0:${16*8}`;
@@ -87,79 +88,58 @@ export class TrackService {
     return Tone.Transport.seconds;
   }
 
-  //lastNote = new Coordinate(-10, -10);
   setNotes(timeline: Note[]) {
     this.clear();
     let synth = new Tone.PolySynth(12, Tone.Synth).toMaster();
 
     this.layers.filter(layer => layer.playing).forEach(layer => {
-      let final = timeline.map(note => {
-        return {
-          time: `0:${this.getNoteStart(layer, note)}`,
-          note: this.getNoteWithPitch(layer, `${this.notes[note.position.y]}${layer.octave}`),
-          length: `0:${note.length / layer.playbackRate}:0`
-        };
-      });
-
-      let part = new Tone.Part(function (time, value) {
-        synth.triggerAttackRelease(value.note, value.length, time);
-      }, final);
-      part.loop = true;
-      part.loopEnd = `0:16`
-      part.playbackRate = layer.playbackRate;
-      part.start(0);
+      //this.buildWithLocalSynth(timeline, layer);
+      this.buildWithMidiOutput(timeline, layer);
     });
-    
-    //   let lineNotes = [];
-    //   let lastNote: Coordinate = undefined;
-    //   // start, length, noteIndex
-    //   for (let y = 0; y < this.notes.length; y++) {
-    //     lastNote = new Coordinate(-10, -10);
-    //     for (let x = 0; x < this.trackLength; x++) {
-    //       if (timeline[x][y].selected) {
-    //         console.log("checking x:" + x, x - 1);
-    //         console.log("lastNote", this.lastNote);
-    //         if (
-    //           this.lastNote.x === x - 1 &&
-    //           this.lastNote.y === y &&
-    //           (timeline[x - 1][y].class === SelectionType.center ||
-    //             timeline[x - 1][y].class === SelectionType.left)
-    //         ) {
-    //           console.log("lastNote found! Extending note", { x: x, y: y });
-    //           lineNotes[lineNotes.length - 1].length += 1;
-    //           this.lastNote = new Coordinate(x, y);
-    //         } else {
-    //           this.lastNote = new Coordinate(x, y);
-    //           console.log("just set lastNote", x);
-    //           lineNotes.push({
-    //             start: x,
-    //             length: 1,
-    //             noteIndex: y
-    //           });
-    //           console.log('added line note', lineNotes)
-    //         }
-    //         // lineNotes.push({ "time": `0:${x}`, "note": `${this.notes[y]}4`, "length": "0:1:0" });
-    //       }
-    //     }
-    //   }
-    //   console.log("notes", lineNotes);
+  }
 
-    //   let final = lineNotes.map(lineNote => {
-    //     return {
-    //       time: `0:${this.getNoteStart(layer, lineNote)}`,
-    //       note: this.getNoteWithPitch(layer, `${this.notes[lineNote.noteIndex]}${layer.octave}`),
-    //       length: `0:${lineNote.length / layer.playbackRate}:0`
-    //     };
-    //   });
-    //   let part = new Tone.Part(function(time, value) {
-    //     synth.triggerAttackRelease(value.note, value.length, time);
-    //   }, final); 
+  buildWithLocalSynth(timeline: Note[], layer: Layer) {
+    let synth = new Tone.PolySynth(12, Tone.Synth).toMaster();
+    let final = timeline.map(note => {
+      return {
+        time: `0:${this.getNoteStart(layer, note)}`,
+        note: this.getNoteWithPitch(layer, `${this.notes[note.position.y]}${layer.octave}`),
+        length: `0:${note.length / layer.playbackRate}:0`
+      };
+    });
 
-    //   part.loop = true;
-    //   part.loopEnd = `0:16`
-    //   part.playbackRate = layer.playbackRate;
-    //   part.start(0);
-    // });
+    let part = new Tone.Part(function (time, value) {
+      synth.triggerAttackRelease(value.note, value.length, time);
+    }, final);
+    part.loop = true;
+    part.loopEnd = `0:16`
+    part.playbackRate = layer.playbackRate;
+    part.start(0);
+
+  }
+
+  buildWithMidiOutput(timeline: Note[], layer: Layer) {
+    let final = timeline.map(note => {
+      return {
+        start: this.getNoteStart(layer, note),
+        note: this.getNoteWithPitch(layer, `${this.notes[note.position.y]}${layer.octave}`),
+        length: note.length / layer.playbackRate
+      };
+    });
+
+    let midiEvent = new Tone.Event(this.playMidi.bind(this), final);
+    midiEvent.loop = true;
+    midiEvent.loopEnd = `0:16`
+    midiEvent.playbackRate = layer.playbackRate;
+    midiEvent.start(0);
+  }
+
+  playMidi(time, value) {
+    console.log('trigger midi', value);
+    console.log('triger midi time', time);
+    value.forEach(x => {
+      this.midiService.playNote(x.note, "+"+x.start*500, x.length*500);
+    });
   }
 
   getNoteStart(layer: Layer, note: Note) {

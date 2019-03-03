@@ -13,6 +13,7 @@ import { stateReducer } from './state/reducers/state.reducer';
 import { timelineReducer } from './state/reducers/timeline.reducer';
 import { layerReducer } from './state/reducers/layer.reducer';
 import { IncrementorComponent } from './components/incrementor/incrementor.component';
+import { MidiService } from './services/midi.service';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,7 @@ import { IncrementorComponent } from './components/incrementor/incrementor.compo
       layers: layerReducer
     })
   ],
-  providers: [TrackService],
+  providers: [TrackService, MidiService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

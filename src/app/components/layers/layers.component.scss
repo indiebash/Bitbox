@@ -15,7 +15,7 @@
     }
 
     .layer {
-        width: 85%;
+        width: 70%;
         padding: 10px;
         font-size: 40px;
         margin-bottom: 20px;
@@ -53,6 +53,10 @@
     .selected {
         // font-size: 60px;
     }
+
+    .playing {
+        width: 85%;
+    }
 }
 
 .add-layer-btn {
@@ -82,4 +86,9 @@
 .purple {
     background-color: $color-neon-purple;
     box-shadow: 0px 0px 25px 6px darken($color-neon-purple, 10%);
+}
+
+.orange {
+    background-color: $color-neon-orange;
+    box-shadow: 0px 0px 25px 6px darken($color-neon-orange, 10%);
 }
