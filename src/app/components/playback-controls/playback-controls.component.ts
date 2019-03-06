@@ -16,6 +16,12 @@ export class PlaybackControlsComponent implements OnInit {
   layers: Layer[];
   selectedLayer: number;
   incrementorControls: Incrementor[] = [];
+
+  foods: any[] = [
+    {value: 'steak-0', viewValue: 'Steak'},
+    {value: 'pizza-1', viewValue: 'Pizza'},
+    {value: 'tacos-2', viewValue: 'Tacos'}
+  ];
   
   constructor(private trackService: TrackService, private store: Store<AppState>) {
     this.store.pipe(select('layers')).subscribe(layers => {

@@ -1,4 +1,4 @@
-import { Layer, Note } from '../models';
+import { Layer, Note, MidiSource } from '../models';
 
 export interface AppState {
     misc: MiscState;
@@ -10,5 +10,6 @@ export interface MiscState {
     time: number;
     trackLength: number;
     notes: string[];
-    selectedLayer: number
+    selectedLayer: number;
+    midiSources: MidiSource[];
 }

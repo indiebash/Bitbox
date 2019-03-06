@@ -6,7 +6,8 @@ export const initialState: MiscState = {
   time: 0,
   trackLength: 16,
   notes: ['B', 'A#', 'A', 'G#', 'G', 'F#', 'F', 'E', 'D#', 'D', 'C#', 'C'],
-  selectedLayer: 0
+  selectedLayer: 0,
+  midiSources: []
 };
 
 export function stateReducer(state = initialState, action: StateAction) {

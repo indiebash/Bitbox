@@ -7,6 +7,8 @@ export class Layer {
     playbackType: PlaybackType;
     pitch: number;
     playing: false = false;
+    output: string;
+    channel: number;
 
     constructor(octave?: number, playbackRate?: number, color?: string, playbackType?: PlaybackType, pitch?: number) {
         this.octave = octave ? octave : 4;
@@ -14,5 +16,7 @@ export class Layer {
         this.color = color ? color : 'blue';
         this.playbackType = playbackType ? playbackType : PlaybackType.forward;
         this.pitch = pitch ? pitch : 0;
+        this.output = null;
+        this.channel = 1;
     }
 }

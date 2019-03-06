@@ -28,11 +28,10 @@ export class MidiService {
     
   }
 
-  public playNote(note, delay, duration) {
+  public playNote(note, duration) {
     console.log('playing note', note);
-    console.log('delay',delay);
     console.log('duration', duration)
     let output = WebMidi.outputs[1];
-    output.playNote(note, 1, {duration: duration, velocity: 1, time: delay});
+    output.playNote(note, 1, {duration: duration, velocity: 1});
   }
 }

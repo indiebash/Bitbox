@@ -14,6 +14,7 @@ import { timelineReducer } from './state/reducers/timeline.reducer';
 import { layerReducer } from './state/reducers/layer.reducer';
 import { IncrementorComponent } from './components/incrementor/incrementor.component';
 import { MidiService } from './services/midi.service';
+import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { MidiService } from './services/midi.service';
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
+    MatSelectModule,
     StoreModule.forRoot({ 
       misc: stateReducer,
       timeline: timelineReducer,
