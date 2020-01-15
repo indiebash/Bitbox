@@ -1,5 +1,9 @@
 import { Injectable } from '@angular/core';
 import WebMidi, { INoteParam, IMidiChannel } from 'webmidi';
+import { Store } from '@ngrx/store';
+import { AppState } from '../state/app.state';
+import { SetMidiSources } from '../state/actions/state.actions';
+import { MidiSource } from '../models';
 
 @Injectable({
   providedIn: 'root'
@@ -7,31 +11,26 @@ import WebMidi, { INoteParam, IMidiChannel } from 'webmidi';
 export class MidiService {
   output;
 
-  constructor() { 
+  constructor(private store: Store<AppState>) { 
     WebMidi.enable(function (err) {
       if (err) {
         console.log("WebMidi could not be enabled.", err);
+        this.store.dispatch(new SetMidiSources([
+          new MidiSource('Bitbox', 'Bitbox')
+        ]));
       } else {
-        console.log("WebMidi enabled!");
-        //setInterval(() => {
-          console.log("Inputs", WebMidi.inputs);
-          console.log("Outputs", WebMidi.outputs);
-
-          //this.output = WebMidi.outputs[1];
-          // output.playNote("C3");
-          // output.stopNote("C3");
-          //output.playNote("C4", 1, {duration: 1000, velocity: 1});
-          //output.playNote("G4", 1, {duration: 5000, velocity: 1});
-        //}, 5000);
+          this.store.dispatch(new SetMidiSources([
+            new MidiSource('Bitbox', 'Bitbox'),
+            ...WebMidi.outputs.map(o => {
+              return new MidiSource(o.id, o.name)
+            })
+          ]));
       }
-    });
-    
+    }.bind(this));
   }
 
   public playNote(note, duration) {
-    console.log('playing note', note);
-    console.log('duration', duration)
-    let output = WebMidi.outputs[1];
+    let output = WebMidi.outputs[1]; // TODO play on correct channel
     output.playNote(note, 1, {duration: duration, velocity: 1});
   }
 }

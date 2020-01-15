@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { TrackService } from 'src/app/services/track.service';
 import { Store, select } from '@ngrx/store';
 import { AppState } from 'src/app/state/app.state';
-import { Layer } from 'src/app/models';
+import { Layer, MidiSource } from 'src/app/models';
 import { SetPlaybackRate, SetOctave, SetPlaybackType, SetPitch } from 'src/app/state/actions/layer.actions';
 import { Incrementor } from '../incrementor/incrementor.component';
 import { PlaybackType } from 'src/app/enums';
@@ -16,12 +16,7 @@ export class PlaybackControlsComponent implements OnInit {
   layers: Layer[];
   selectedLayer: number;
   incrementorControls: Incrementor[] = [];
-
-  foods: any[] = [
-    {value: 'steak-0', viewValue: 'Steak'},
-    {value: 'pizza-1', viewValue: 'Pizza'},
-    {value: 'tacos-2', viewValue: 'Tacos'}
-  ];
+  midiOutputs: MidiSource[] = [];
   
   constructor(private trackService: TrackService, private store: Store<AppState>) {
     this.store.pipe(select('layers')).subscribe(layers => {
@@ -31,6 +26,10 @@ export class PlaybackControlsComponent implements OnInit {
     this.store.pipe(select('misc', 'selectedLayer')).subscribe(selectedLayer => {
       this.selectedLayer = selectedLayer;
       this.setIncrementors();
+    });
+    this.store.pipe(select('misc', 'midiSources')).subscribe(midiSources => {
+      this.midiOutputs = midiSources;
+      console.log('midi sources', midiSources)
     });
   }
 

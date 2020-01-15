@@ -21,6 +21,9 @@ export function stateReducer(state = initialState, action: StateAction) {
     case ActionTypes.SelectLayer:
       return {...state, selectedLayer: action.payload};
 
+    case ActionTypes.SetMidiSources:
+      return {...state, midiSources: action.payload};
+
     default:
       return state;
   }

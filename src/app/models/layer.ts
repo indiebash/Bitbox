@@ -16,7 +16,7 @@ export class Layer {
         this.color = color ? color : 'blue';
         this.playbackType = playbackType ? playbackType : PlaybackType.forward;
         this.pitch = pitch ? pitch : 0;
-        this.output = null;
+        this.output = 'Bitbox';
         this.channel = 1;
     }
 }

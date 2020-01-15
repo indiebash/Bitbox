@@ -103,7 +103,7 @@ export class TrackService {
         note: this.getNoteWithPitch(layer, `${this.notes[note.position.y]}${layer.octave}`),
         length: `0:${note.length / layer.playbackRate}:0`,
         midiLength: note.length / layer.playbackRate * 500,
-        playMidi: true
+        playMidi: layer.output !== 'Bitbox'
       };
     });
 

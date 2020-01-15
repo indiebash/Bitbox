@@ -2,64 +2,66 @@
 
 .incrementor {
     border-radius: 30px;
-    width: 50px;
-    height: 50px;
+    width: 5vw;
+    height: 5vw;
     position: relative;
     float: right;
-    margin-right: 100px;
-    margin-top: 15px;
+    margin-right: 8vw;
+    margin-top: 1vw;
 
     .value {
-        font-size: 26px;
+        font-size: 3vw;
         width: 100%;
         text-align: center;
         position: absolute;
-        top: 12px;
+        top: 1vw;
     }
 
     .add {
-        font-size: 30px;
+        font-size: 4vw;
         width: 100%;
         text-align: center;
         position: absolute;
-        top: 10px;
-        left: 40px;
+        top: 0.8vw;
+        left: 4vw;
 
         &:hover {
-            font-size: 36px;
-            top: 8px;
+            font-size: 5vw;
+            top: 0.4vw;
         }
     }
 
     .minus {
-        font-size: 30px;
+        font-size: 4vw;
         width: 100%;
         text-align: center;
         position: absolute;
-        top: 10px;
-        right: 40px;
+        top: 0.8vw;
+        right: 4vw;
 
         &:hover {
-            font-size: 36px;
-            top: 8px;
+            font-size: 5vw;
+            top: 0.4vw;
         }
     }
 
     .label {
-        width: 200px;
+        font-size: 2vw;
+        width: 5vw;
         text-align: center;
         position: absolute;
-        top: 65px;
-        left: -75px;
+        top: 6vw;
+        left: -1vw;
         overflow: visible;
         white-space: nowrap;
     }
 
     .value-icon {
+        font-size: 3vw;
         color: white;
         width: 100%;
         text-align: center;
-        padding-top: 12px;
+        padding-top: 1vw;
     }
 }
 
@@ -73,6 +75,7 @@
 
 .pink {
     border: 4px solid $color-neon-pink;
+    box-shadow: 0px 0px 25px 6px darken($color-neon-pink, 10%);
     i {
         color: $color-neon-pink;
     }
@@ -80,6 +83,7 @@
 
 .mint {
     border: 4px solid $color-neon-mint;
+    box-shadow: 0px 0px 25px 6px darken($color-neon-mint, 10%);
     i {
         color: $color-neon-mint;
     }
@@ -87,6 +91,7 @@
 
 .purple {
     border: 4px solid $color-neon-purple;
+    box-shadow: 0px 0px 25px 6px darken($color-neon-purple, 10%);
     i {
         color: $color-neon-purple;
     }
@@ -94,6 +99,7 @@
 
 .orange {
     border: 4px solid $color-neon-orange;
+    box-shadow: 0px 0px 25px 6px darken($color-neon-orange, 10%);
     i {
         color: $color-neon-orange;
     }

@@ -1,8 +1,8 @@
 <div class="playback-controls">
     <mat-form-field>
-        <mat-select placeholder="Output">
-          <mat-option *ngFor="let option of midiChannels" [value]="option.value">
-            {{option.viewValue}}
+        <mat-select placeholder="Output" [(value)]="layers[selectedLayer].output">
+          <mat-option *ngFor="let option of midiOutputs" value="option.id">
+            {{option.name}}
           </mat-option>
         </mat-select>
       </mat-form-field>
