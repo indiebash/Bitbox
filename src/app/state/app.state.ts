@@ -12,4 +12,5 @@ export interface MiscState {
     notes: string[];
     selectedLayer: number;
     midiSources: MidiSource[];
+    optionsToggled: boolean;
 }

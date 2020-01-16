@@ -29,8 +29,8 @@ export class MidiService {
     }.bind(this));
   }
 
-  public playNote(note, duration) {
-    let output = WebMidi.outputs[1]; // TODO play on correct channel
+  public playNote(note, duration, midiID) {
+    let output = WebMidi.outputs.find(x => x.id === midiID); // TODO play on correct channel
     output.playNote(note, 1, {duration: duration, velocity: 1});
   }
 }

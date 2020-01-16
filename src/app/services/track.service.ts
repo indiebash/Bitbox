@@ -109,7 +109,7 @@ export class TrackService {
 
     let part = new Tone.Part(function (time, value) {
       if(value.playMidi) {
-        this.midiService.playNote(value.note, value.midiLength);
+        this.midiService.playNote(value.note, value.midiLength, layer.output);
       } else {
         synth.triggerAttackRelease(value.note, value.length, time);
       }

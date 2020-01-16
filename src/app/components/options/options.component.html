@@ -1,0 +1,19 @@
+<div class="options" *ngIf="toggled">
+    <div class="title">Options</div>
+
+    <button class="close-btn" (click)="closeModal()"><i class="material-icons minus">close</i></button>
+
+    <div *ngFor="let layer of (layers$ | async); let i = index" class="layer">
+        <p>Layer {{i+1}}</p>
+        <div class="form-group">
+            <label for="output">Output</label>
+            <select class="form-control" name="output" [ngModel]="layer.output"
+                (change)="outputChange(i, $event.target.value)">
+                <option *ngFor="let option of midiOutputs" [value]="option.id"
+                    [selected]="layer.output == option.id">{{option.name}}</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="blanket" *ngIf="toggled"></div>

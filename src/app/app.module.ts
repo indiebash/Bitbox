@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; 
-
+import { FormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './components/header/header.component';
 import { TimelineComponent } from './components/timeline/timeline.component';
@@ -15,6 +15,7 @@ import { layerReducer } from './state/reducers/layer.reducer';
 import { IncrementorComponent } from './components/incrementor/incrementor.component';
 import { MidiService } from './services/midi.service';
 import { MatSelectModule } from '@angular/material/select';
+import { OptionsComponent } from './components/options/options.component';
 
 @NgModule({
   declarations: [
@@ -24,11 +25,13 @@ import { MatSelectModule } from '@angular/material/select';
     LayersComponent,
     PlaybackControlsComponent,
     IncrementorComponent,
+    OptionsComponent,
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     MatSelectModule,
+    FormsModule,
     StoreModule.forRoot({ 
       misc: stateReducer,
       timeline: timelineReducer,

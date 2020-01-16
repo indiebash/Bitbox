@@ -47,13 +47,16 @@
 
     .label {
         font-size: 2vw;
-        width: 5vw;
+        width: 10vw;
         text-align: center;
         position: absolute;
         top: 6vw;
-        left: -1vw;
+        left: -2.3vw;
         overflow: visible;
         white-space: nowrap;
+        span {
+            width: 100%;
+        }
     }
 
     .value-icon {

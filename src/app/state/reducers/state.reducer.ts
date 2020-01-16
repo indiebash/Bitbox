@@ -7,7 +7,8 @@ export const initialState: MiscState = {
   trackLength: 16,
   notes: ['B', 'A#', 'A', 'G#', 'G', 'F#', 'F', 'E', 'D#', 'D', 'C#', 'C'],
   selectedLayer: 0,
-  midiSources: []
+  midiSources: [],
+  optionsToggled: false
 };
 
 export function stateReducer(state = initialState, action: StateAction) {
@@ -23,6 +24,9 @@ export function stateReducer(state = initialState, action: StateAction) {
 
     case ActionTypes.SetMidiSources:
       return {...state, midiSources: action.payload};
+
+    case ActionTypes.ShowOptions:
+      return {...state, optionsToggled: action.payload};
 
     default:
       return state;

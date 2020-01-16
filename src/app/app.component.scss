@@ -24,6 +24,7 @@ playback-controls {
     display: grid;
     grid-template-columns: 20% 80%;
     grid-template-areas:
+    'header header'
     'layers timeline'
     'layers playback-controls';
 }

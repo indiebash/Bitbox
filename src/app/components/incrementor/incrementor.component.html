@@ -3,5 +3,5 @@
   <div *ngIf="!data.useIcon" class="value">{{data.value}}</div>
   <i *ngIf="data.useIcon" class="value-icon material-icons">{{data.value}}</i>
   <i class="material-icons minus" (click)="data.decreaseFunc()">keyboard_arrow_left</i>
-  <div class="label">{{data.label}}</div>
+  <div class="label"><span>{{data.label}}</span></div>
 </div>
