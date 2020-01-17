@@ -4,7 +4,7 @@ import { AppState } from 'src/app/state/app.state';
 import { Observable } from 'rxjs';
 import { Layer, MidiSource } from 'src/app/models';
 import { SetOutput } from 'src/app/state/actions/layer.actions';
-import { ShowOptions } from 'src/app/state/actions/state.actions';
+import { ShowOptions, SetTrackLength } from 'src/app/state/actions/state.actions';
 
 @Component({
   selector: 'options',
@@ -15,10 +15,15 @@ export class OptionsComponent implements OnInit {
   toggled: boolean = false;
   layers$: Observable<Layer[]>;
   midiOutputs: MidiSource[] = [];
+  trackLength: number;
 
   constructor(private store: Store<AppState>) {
     this.store.pipe(select('misc', 'optionsToggled')).subscribe(optionsToggled => {
       this.toggled = optionsToggled;
+    });
+
+    this.store.pipe(select('misc', 'trackLength')).subscribe(trackLength => {
+      this.trackLength = trackLength;
     });
 
     this.store.pipe(select('misc', 'midiSources')).subscribe(midiSources => {
@@ -42,6 +47,10 @@ export class OptionsComponent implements OnInit {
 
   closeModal() {
     this.store.dispatch(new ShowOptions(false));
+  }
+
+  setTrackLength(value) {
+    this.store.dispatch(new SetTrackLength(this.trackLength));
   }
 
 }

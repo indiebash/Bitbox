@@ -4,7 +4,7 @@ import { AppState, MiscState } from '../app.state';
 
 export const initialState: MiscState = {
   time: 0,
-  trackLength: 16,
+  trackLength: 32,
   notes: ['B', 'A#', 'A', 'G#', 'G', 'F#', 'F', 'E', 'D#', 'D', 'C#', 'C'],
   selectedLayer: 0,
   midiSources: [],
@@ -14,19 +14,22 @@ export const initialState: MiscState = {
 export function stateReducer(state = initialState, action: StateAction) {
   switch (action.type) {
     case ActionTypes.SetTime:
-      return {...state, time: action.payload};
+      return { ...state, time: action.payload };
 
     case ActionTypes.ResetTime:
-      return {...state, time: 0};
+      return { ...state, time: 0 };
 
     case ActionTypes.SelectLayer:
-      return {...state, selectedLayer: action.payload};
+      return { ...state, selectedLayer: action.payload };
 
     case ActionTypes.SetMidiSources:
-      return {...state, midiSources: action.payload};
+      return { ...state, midiSources: action.payload };
 
     case ActionTypes.ShowOptions:
-      return {...state, optionsToggled: action.payload};
+      return { ...state, optionsToggled: action.payload };
+
+    case ActionTypes.SetTrackLength:
+      return { ...state, trackLength: action.payload };
 
     default:
       return state;

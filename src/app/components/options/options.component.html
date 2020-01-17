@@ -3,6 +3,11 @@
 
     <button class="close-btn" (click)="closeModal()"><i class="material-icons minus">close</i></button>
 
+    <div class="form-group">
+        <label for="trackLength">Track Length</label>
+        <input type="number" name="trackLength" [(ngModel)]="trackLength" (change)="setTrackLength($event)">
+    </div>
+
     <div *ngFor="let layer of (layers$ | async); let i = index" class="layer">
         <p>Layer {{i+1}}</p>
         <div class="form-group">

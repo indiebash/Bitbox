@@ -21,7 +21,6 @@ export class TrackService {
   constructor(private store: Store<AppState>, private midiService: MidiService) {
     Tone.Transport.loop = true;
     Tone.Transport.loopStart = 0;
-    Tone.Transport.loopEnd = `0:${16*8}`;
     Tone.Transport.bpm.value = 120;
 
     this.store
@@ -35,7 +34,11 @@ export class TrackService {
       });
     this.store
       .pipe(select("misc", "trackLength"))
-      .subscribe(trackLength => (this.trackLength = trackLength));
+      .subscribe(trackLength => {
+        this.trackLength = trackLength;
+        Tone.Transport.loopEnd = `0:${trackLength*8}`;
+        this.updateNotes();
+      });
     this.store.pipe(select("timeline")).subscribe(timeline => {
       this.timeline = timeline;
       this.updateNotes();
@@ -115,10 +118,10 @@ export class TrackService {
       }
     }.bind(this), final);
     part.loop = true;
-    part.loopEnd = `0:16`
+    part.loopEnd = `0:${this.trackLength}`;
     part.playbackRate = layer.playbackRate;
     part.start(0);
-  }
+  };
 
   getNoteStart(layer: Layer, note: Note) {
     const x = note.position.x;
@@ -131,7 +134,7 @@ export class TrackService {
         }
       default: return x;
     }
-  }
+  };
 
   getNoteWithPitch(layer: Layer, note) {
     let fullRange = [];
@@ -142,5 +145,5 @@ export class TrackService {
     }
     let idx = fullRange.findIndex(x => x === note);
     return fullRange[idx - layer.pitch];
-  }
+  };
 }

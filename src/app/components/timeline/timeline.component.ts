@@ -109,13 +109,13 @@ export class TimelineComponent implements OnInit, AfterViewInit {
       }
   }
 
-  getNote(position: Coordinate) {
+  getNote(position: Coordinate) : Note {
     return this.position ? this.timeline.find(note => 
       note.position.y === position.y
       && position.x >= note.position.x
       && position.x <= note.position.x+note.length-1
     ) : undefined;
-  }
+  };
 
   drawNotes() {
     this.ctx.fillStyle = ColorType[this.layers[this.state.selectedLayer].color];
@@ -218,10 +218,11 @@ export class TimelineComponent implements OnInit, AfterViewInit {
       this.ctx.strokeStyle = ColorType[layer.color];
       this.ctx.shadowColor = ColorType[layer.color];
       let xPos;
+      let halfLength = this.state.trackLength / 2;
       if(layer.playbackType === PlaybackType.forward) {
-        xPos = (this.state.time/8%8*layer.playbackRate%1)*this.canvas.width;
+        xPos = (this.state.time/halfLength%halfLength*layer.playbackRate%1)*this.canvas.width;
       } else if (layer.playbackType === PlaybackType.backwards) {
-        xPos = ((1-(this.state.time/8%8*layer.playbackRate%1))*this.canvas.width);
+        xPos = ((1-(this.state.time/halfLength%halfLength*layer.playbackRate%1))*this.canvas.width);
       }
 
       this.ctx.beginPath();

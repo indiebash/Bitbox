@@ -8,7 +8,8 @@ export enum ActionTypes {
   SetDraggingRow = 'Set Dragging Row',
   SelectLayer = 'Select Layer',
   SetMidiSources = 'Set Midi Sources',
-  ShowOptions = 'Show Options'
+  ShowOptions = 'Show Options',
+  SetTrackLength = 'Set Track Length'
 }
  
 export class ResetTime implements Action {
@@ -42,6 +43,11 @@ export class SetMidiSources implements Action {
 export class ShowOptions implements Action {
   readonly type = ActionTypes.ShowOptions;
   constructor(public payload: Boolean) {}
+}
+
+export class SetTrackLength implements Action {
+  readonly type = ActionTypes.SetTrackLength;
+  constructor(public payload: number) {}
 }
 
 export type StateAction = {type: ActionTypes, payload: any}
