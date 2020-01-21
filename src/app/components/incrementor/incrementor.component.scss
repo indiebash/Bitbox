@@ -2,56 +2,57 @@
 
 .incrementor {
     border-radius: 30px;
-    width: 5vw;
-    height: 5vw;
+    width: 50px;
+    height: 50px;
     position: relative;
     float: right;
-    margin-right: 8vw;
-    margin-top: 1vw;
+    margin-right: 80px;
+    margin-top: 15px;
 
     .value {
-        font-size: 3vw;
+        font-size: 28px;
         width: 100%;
         text-align: center;
         position: absolute;
-        top: 1vw;
+        top: 13px;
     }
 
     .add {
-        font-size: 4vw;
+        font-size: 60px;
         width: 100%;
         text-align: center;
         position: absolute;
-        top: 0.8vw;
-        left: 4vw;
+        top: -4px;
+        left: 40px;
 
         &:hover {
-            font-size: 5vw;
-            top: 0.4vw;
+            font-size: 70px;
+            top: -8px;
         }
     }
 
     .minus {
-        font-size: 4vw;
+        font-size: 60px;
         width: 100%;
         text-align: center;
         position: absolute;
-        top: 0.8vw;
-        right: 4vw;
+        top: -4px;
+        right: 50px;
 
         &:hover {
-            font-size: 5vw;
-            top: 0.4vw;
+            font-size: 70px;
+            top: -8px;
+            right: 60px;
         }
     }
 
     .label {
-        font-size: 2vw;
-        width: 10vw;
+        font-size: 18px;
+        width: 150px;
         text-align: center;
         position: absolute;
-        top: 6vw;
-        left: -2.3vw;
+        top: 65px;
+        left: -48px;
         overflow: visible;
         white-space: nowrap;
         span {
@@ -60,17 +61,17 @@
     }
 
     .value-icon {
-        font-size: 3vw;
+        font-size: 34px;
         color: white;
         width: 100%;
         text-align: center;
-        padding-top: 1vw;
+        padding-top: 9px;
     }
 }
 
 .blue {
     border: 4px solid $color-neon-blue;
-    box-shadow: 0px 0px 25px 6px darken($color-neon-blue, 10%);
+    box-shadow: 0px 0px 15px 6px darken($color-neon-blue, 10%);
     i {
         color: $color-neon-blue;
     }
@@ -78,7 +79,7 @@
 
 .pink {
     border: 4px solid $color-neon-pink;
-    box-shadow: 0px 0px 25px 6px darken($color-neon-pink, 10%);
+    box-shadow: 0px 0px 15px 6px darken($color-neon-pink, 10%);
     i {
         color: $color-neon-pink;
     }
@@ -86,7 +87,7 @@
 
 .mint {
     border: 4px solid $color-neon-mint;
-    box-shadow: 0px 0px 25px 6px darken($color-neon-mint, 10%);
+    box-shadow: 0px 0px 15px 6px darken($color-neon-mint, 10%);
     i {
         color: $color-neon-mint;
     }
@@ -94,7 +95,7 @@
 
 .purple {
     border: 4px solid $color-neon-purple;
-    box-shadow: 0px 0px 25px 6px darken($color-neon-purple, 10%);
+    box-shadow: 0px 0px 15px 6px darken($color-neon-purple, 10%);
     i {
         color: $color-neon-purple;
     }
@@ -102,7 +103,7 @@
 
 .orange {
     border: 4px solid $color-neon-orange;
-    box-shadow: 0px 0px 25px 6px darken($color-neon-orange, 10%);
+    box-shadow: 0px 0px 15px 6px darken($color-neon-orange, 10%);
     i {
         color: $color-neon-orange;
     }

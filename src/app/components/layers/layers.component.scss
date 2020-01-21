@@ -5,10 +5,9 @@
     color: white;
     height: 100%;
     overflow-x: hidden;
-    padding-top: 15px;
+    padding-top: 20px;
 
     .header {
-        //font-size: 2.5em;
         font-size: 5vw;
         padding-bottom: 15px;
         padding-top: 15px;
@@ -20,8 +19,7 @@
     .layer {
         width: 70%;
         padding: 10px;
-        //font-size: 40px;
-        font-size: 4vw;
+        font-size: 28px;
         margin-bottom: 20px;
         position: relative;
         border-radius: 0px 5px 5px 0px;
@@ -45,8 +43,7 @@
             cursor: pointer;
 
             i {
-                //font-size: 50px;
-                font-size: 4vw;
+                font-size: 30px;
                 text-shadow: 0px 0px 15px darken(white, 10%);
             }
         }
@@ -67,7 +64,7 @@
 
 .add-layer-btn {
     text-align: center;
-    font-size: 4vw;
+    font-size: 30px;
     background-color: rgba(255,255,255, 0.1);
     width: 85%;
     border-radius: 0px 5px 5px 0px;
@@ -76,25 +73,25 @@
 
 .blue {
     background-color: $color-neon-blue;
-    box-shadow: 0px 0px 25px 6px darken($color-neon-blue, 10%);
+    box-shadow: 0px 0px 15px 6px darken($color-neon-blue, 10%);
 }
 
 .pink {
     background-color: $color-neon-pink;
-    box-shadow: 0px 0px 25px 6px darken($color-neon-pink, 10%);
+    box-shadow: 0px 0px 15px 6px darken($color-neon-pink, 10%);
 }
 
 .mint {
     background-color: $color-neon-mint;
-    box-shadow: 0px 0px 25px 6px darken($color-neon-mint, 10%);
+    box-shadow: 0px 0px 15px 6px darken($color-neon-mint, 10%);
 }
 
 .purple {
     background-color: $color-neon-purple;
-    box-shadow: 0px 0px 25px 6px darken($color-neon-purple, 10%);
+    box-shadow: 0px 0px 15px 6px darken($color-neon-purple, 10%);
 }
 
 .orange {
     background-color: $color-neon-orange;
-    box-shadow: 0px 0px 25px 6px darken($color-neon-orange, 10%);
+    box-shadow: 0px 0px 15px 6px darken($color-neon-orange, 10%);
 }

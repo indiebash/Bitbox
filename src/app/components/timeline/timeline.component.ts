@@ -62,8 +62,9 @@ export class TimelineComponent implements OnInit, AfterViewInit {
     let rect = this.canvas.getBoundingClientRect();
     let x = e.clientX - rect.left;
     let y = e.clientY - rect.top;
-    let yPos = Math.trunc(y/(this.canvas.height/12));
-    let xPos = Math.trunc(x/(this.canvas.width/this.state.trackLength));
+    let yPos = Math.trunc(y/((window.innerHeight-170)/12));
+    let xPos = Math.trunc(x/((window.innerWidth-200)/this.state.trackLength));
+
     if(!this.position || this.position.x !== xPos || this.position.y !== yPos) {
       // Position Changed
       if(this.dragging) {
